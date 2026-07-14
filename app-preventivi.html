@@ -164,21 +164,35 @@ td.num,th.num{text-align:right;font-family:var(--font-mono);font-variant-numeric
 .anteprima-barra{padding:9px 16px;background:var(--ink);color:#C6CBCA;font-family:var(--font-cond);font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;display:flex;align-items:center;gap:10px}
 .anteprima-barra .pallino{width:7px;height:7px;border-radius:50%;background:var(--ok)}
 #iframe-anteprima,#iframe-anteprima-mobile{flex:1;width:100%;border:none;background:#fff}
+.pannello-voci .pannello-corpo{container-type:inline-size}
 .voci-lista{display:flex;flex-direction:column}
-.voce-riga{display:grid;grid-template-columns:minmax(0,2.2fr) 92px 74px 96px 70px 96px auto;gap:8px;align-items:center;padding:10px 0;border-bottom:1px solid var(--bordo)}
+.voce-riga,.voce-intestazioni{display:grid;grid-template-columns:minmax(230px,2fr) minmax(180px,1.15fr) 132px 112px 84px 116px 78px;gap:8px;align-items:center}
+.voce-riga{padding:10px 0;border-bottom:1px solid var(--bordo)}
+.voce-campo{display:contents}
+.voce-etichetta{display:none}
 .voce-riga input,.voce-riga select{background:var(--bianco);border:1px solid var(--bordo-forte);border-radius:var(--r-tag);padding:6px 8px;font-size:13.5px;width:100%;min-width:0}
 .voce-riga input:focus,.voce-riga select:focus{border-color:var(--blu);box-shadow:var(--focus)}
 .voce-riga input[type=number]{font-family:var(--font-mono);font-size:13px;text-align:right}
-.voce-importo{font-family:var(--font-mono);font-weight:600;font-size:13.5px;text-align:right;white-space:nowrap;color:var(--ink)}
-.voce-strumenti{display:flex;gap:0}
+.voce-qta-controlli{display:grid;grid-template-columns:minmax(54px,1fr) 58px;gap:4px;min-width:0}
+.input-con-affisso{display:block;position:relative;min-width:0}
+.input-con-affisso::before,.input-con-affisso::after{position:absolute;top:50%;transform:translateY(-50%);z-index:1;color:var(--muted);font-family:var(--font-mono);font-size:12px;pointer-events:none}
+.input-con-affisso.valuta::before{content:"€";left:8px}
+.input-con-affisso.valuta input{padding-left:23px}
+.input-con-affisso.percentuale::after{content:"%";right:8px}
+.input-con-affisso.percentuale input{padding-right:22px}
+.voce-importo{font-family:var(--font-mono);font-weight:600;font-size:13.5px;text-align:right;white-space:nowrap;color:var(--ink);min-height:34px;padding:6px 8px;border:1px solid var(--bordo);border-radius:var(--r-tag);background:var(--pagina);display:flex;align-items:center;justify-content:flex-end}
+.voce-strumenti{display:flex;gap:0;justify-content:flex-end}
 .voce-strumenti .btn-icona{padding:5px}
 .voce-strumenti .btn-icona svg{width:14px;height:14px}
-.voce-intestazioni{display:grid;grid-template-columns:minmax(0,2.2fr) 92px 74px 96px 70px 96px auto;gap:8px;padding:0 0 6px;font-family:var(--font-cond);font-weight:600;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.voce-intestazioni{padding:0 0 6px;font-family:var(--font-cond);font-weight:600;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 .voce-intestazioni span:nth-child(n+3){text-align:right}
-.totali-blocco{margin-left:auto;width:100%;max-width:330px;display:flex;flex-direction:column;gap:7px;padding-top:14px}
-.totali-riga{display:flex;justify-content:space-between;align-items:baseline;font-size:14px}
-.totali-riga .etichetta{color:var(--muted)}
-.totali-riga .valore{font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-weight:500}
+.azioni-voci{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.riepilogo-costi{display:grid;grid-template-columns:minmax(150px,200px) minmax(280px,400px);gap:18px;align-items:start;justify-content:space-between;margin-top:18px}
+.totali-blocco{margin-left:auto;width:100%;max-width:400px;display:flex;flex-direction:column;gap:8px;padding:14px 16px;background:var(--pagina);border:1px solid var(--bordo);border-radius:var(--r)}
+.totali-titolo{font-family:var(--font-cond);font-weight:700;font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink);padding-bottom:7px;border-bottom:1px solid var(--bordo)}
+.totali-riga{display:flex;justify-content:space-between;align-items:baseline;gap:18px;font-size:14px}
+.totali-riga .etichetta{color:var(--testo)}
+.totali-riga .valore{font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-weight:600;white-space:nowrap}
 .totali-riga.finale{border-top:2px solid var(--ink);padding-top:10px;margin-top:4px}
 .totali-riga.finale .etichetta{font-family:var(--font-cond);font-weight:700;font-size:13px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink)}
 .totali-riga.finale .valore{font-family:var(--font-ui);font-weight:800;font-size:22px;color:var(--rosso)}
@@ -245,10 +259,38 @@ details.blocco-guida .guida{padding:0 16px 14px}
 #apri-menu{display:none;position:fixed;top:14px;left:14px;z-index:50;background:var(--ink);color:#fff;border-radius:var(--r);padding:10px;box-shadow:var(--ombra-su)}
 #apri-menu svg{width:18px;height:18px;display:block}
 #velo-menu{display:none;position:fixed;inset:0;background:rgba(28,33,32,.5);z-index:39}
-@media (max-width:1060px){
+@media (max-width:1500px){
   .anteprima-colonna{display:none}
   #btn-anteprima-mobile{display:inline-flex}
   .editor-colonna{padding:20px 18px 90px}
+}
+@container (max-width:1000px){
+  .voce-intestazioni{display:none}
+  .voci-lista{gap:10px}
+  .voce-riga{grid-template-columns:repeat(12,minmax(0,1fr));gap:10px 8px;padding:13px;border:1px solid var(--bordo);border-radius:var(--r);background:var(--bianco);align-items:end}
+  .voce-campo{display:flex;flex-direction:column;gap:5px;min-width:0}
+  .voce-etichetta{display:block;font-family:var(--font-cond);font-weight:600;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+  .voce-descrizione{grid-column:1/7}
+  .voce-categoria{grid-column:7/11}
+  .voce-strumenti{grid-column:11/13;align-self:end}
+  .voce-quantita{grid-column:1/5}
+  .voce-prezzo{grid-column:5/8}
+  .voce-sconto{grid-column:8/10}
+  .voce-importo-campo{grid-column:10/13}
+  .voce-descrizione,.voce-categoria,.voce-strumenti{grid-row:1}
+  .voce-quantita,.voce-prezzo,.voce-sconto,.voce-importo-campo{grid-row:2}
+}
+@container (max-width:620px){
+  .voce-riga{grid-template-columns:1fr 1fr}
+  .voce-descrizione{grid-column:1/-1;grid-row:1}
+  .voce-categoria{grid-column:1/-1;grid-row:2}
+  .voce-quantita{grid-column:1;grid-row:3}
+  .voce-prezzo{grid-column:2;grid-row:3}
+  .voce-sconto{grid-column:1;grid-row:4}
+  .voce-importo-campo{grid-column:2;grid-row:4}
+  .voce-strumenti{grid-column:1/-1;grid-row:5;justify-content:flex-end}
+  .riepilogo-costi{grid-template-columns:1fr;gap:14px}
+  .totali-blocco{margin-left:0;max-width:none}
 }
 @media (max-width:840px){
   #sidebar{transform:translateX(-100%)}
@@ -260,10 +302,8 @@ details.blocco-guida .guida{padding:0 16px 14px}
   .vista-corpo{padding:16px}
   .g2,.g3,.g4{grid-template-columns:1fr}
   .imp-griglia{grid-template-columns:1fr}
-  .voce-intestazioni{display:none}
-  .voce-riga{grid-template-columns:1fr 1fr;grid-auto-rows:auto}
-  .voce-riga>*:first-child{grid-column:1/-1}
-  .voce-strumenti{grid-column:1/-1;justify-content:flex-end}
+  .pannello-voci .pannello-testata{align-items:flex-start;flex-direction:column}
+  .azioni-voci{margin-left:0;width:100%;justify-content:flex-start}
 }
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
@@ -436,10 +476,10 @@ details.blocco-guida .guida{padding:0 16px 14px}
           </div>
         </div>
 
-        <div class="pannello">
+        <div class="pannello pannello-voci">
           <div class="pannello-testata">
             <h2>Voci del preventivo</h2>
-            <div style="margin-left:auto;display:flex;gap:8px">
+            <div class="azioni-voci">
               <button class="btn btn-secondario" id="btn-voce-catalogo" style="padding:6px 12px;font-size:13px">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
                 Dal catalogo
@@ -451,11 +491,11 @@ details.blocco-guida .guida{padding:0 16px 14px}
             </div>
           </div>
           <div class="pannello-corpo">
-            <div class="voce-intestazioni"><span>Descrizione</span><span>Categoria</span><span>Q.tà</span><span>Prezzo</span><span>Sconto</span><span>Importo</span><span></span></div>
+            <div class="voce-intestazioni"><span>Descrizione</span><span>Categoria</span><span>Q.tà / unità</span><span>Prezzo unit.</span><span>Sconto %</span><span>Importo</span><span></span></div>
             <div class="voci-lista" id="voci-lista"></div>
-            <div class="griglia g2" style="margin-top:16px;align-items:end">
-              <div class="campo" style="max-width:200px"><label for="e-sconto">Sconto finale %</label><input id="e-sconto" type="number" min="0" max="100" step="0.5"></div>
-              <div class="totali-blocco" id="totali-blocco"></div>
+            <div class="riepilogo-costi">
+              <div class="campo"><label for="e-sconto">Sconto finale %</label><input id="e-sconto" type="number" min="0" max="100" step="0.5"></div>
+              <div class="totali-blocco" id="totali-blocco" aria-live="polite"></div>
             </div>
           </div>
         </div>
@@ -956,11 +996,31 @@ async function ghScrivi(repo, percorso, testo, sha, messaggio){
     method:'PUT', headers: Object.assign({'Content-Type':'application/json'}, ghHeaders()), body: JSON.stringify(corpo)
   });
   if(!r.ok){
-    const e = new Error('GitHub: scrittura di '+percorso+' fallita ('+r.status+')');
+    let dettaglio = '';
+    try{
+      const risposta = await r.json();
+      if(risposta && risposta.message) dettaglio = ': ' + risposta.message;
+    }catch(ignora){}
+    const e = new Error('GitHub: scrittura di '+percorso+' fallita ('+r.status+')'+dettaglio);
     e.status = r.status;
     throw e;
   }
   return r.json();
+}
+
+const MAX_TENTATIVI_CONFLITTO = 4;
+function pausa(ms){ return new Promise(risolvi=>setTimeout(risolvi, ms)); }
+async function riprovaConflittoGitHub(operazione){
+  let ultimoErrore;
+  for(let tentativo=0;tentativo<MAX_TENTATIVI_CONFLITTO;tentativo++){
+    try{ return await operazione(); }
+    catch(e){
+      ultimoErrore = e;
+      if(e.status!==409 || tentativo===MAX_TENTATIVI_CONFLITTO-1) throw e;
+      await pausa(120 * Math.pow(2, tentativo) + Math.floor(Math.random()*80));
+    }
+  }
+  throw ultimoErrore;
 }
 
 /* Fusione: vince il piu recente su aggiornatoIl; le lapidi impediscono la resurrezione */
@@ -981,7 +1041,7 @@ function fondiLapidi(a, b){
     const gia = mappa.get(l.id);
     if(!gia || l.il > gia.il) mappa.set(l.id, l);
   }
-  return [...mappa.values()];
+  return [...mappa.values()].sort((x,y)=>String(x.id).localeCompare(String(y.id)));
 }
 
 function aggiornaSyncUI(stato, testo){
@@ -990,37 +1050,51 @@ function aggiornaSyncUI(stato, testo){
   t.textContent = testo;
 }
 
-async function sincronizza(spingi){
-  if(!ghPronto()){ aggiornaSyncUI('demo','Modalità demo (locale)'); return; }
-  aggiornaSyncUI('','Sincronizzazione…');
-  try{
-    /* --- impostazioni --- */
+async function sincronizzaImpostazioni(spingi){
+  await riprovaConflittoGitHub(async ()=>{
     const rImp = await ghLeggi(GH.repoDati, 'data/impostazioni.json');
-    let impRemoto = rImp ? JSON.parse(rImp.testo) : null;
+    const impRemoto = rImp ? JSON.parse(rImp.testo) : null;
     if(impRemoto && (impRemoto.aggiornatoIl||0) > (IMP.aggiornatoIl||0)) IMP = impRemoto;
     if(spingi || !impRemoto || (IMP.aggiornatoIl||0) > (impRemoto.aggiornatoIl||0)){
       if(!impRemoto || JSON.stringify(impRemoto) !== JSON.stringify(IMP))
         await ghScrivi(GH.repoDati, 'data/impostazioni.json', JSON.stringify(IMP, null, 2), rImp && rImp.sha, 'Aggiorna impostazioni');
     }
-    /* --- catalogo --- */
+  });
+}
+
+async function sincronizzaCatalogo(){
+  await riprovaConflittoGitHub(async ()=>{
     const rCat = await ghLeggi(GH.repoDati, 'data/catalogo.json');
     const catRemoto = rCat ? JSON.parse(rCat.testo) : { prodotti:[], lapidi:[] };
-    const lapidiCat = fondiLapidi(CAT.lapidi, catRemoto.lapidi);
-    const prodotti = fondiElementi(CAT.prodotti, catRemoto.prodotti||[], lapidiCat);
+    const lapidiCat = fondiLapidi(CAT.lapidi||[], catRemoto.lapidi||[]);
+    const prodotti = fondiElementi(CAT.prodotti||[], catRemoto.prodotti||[], lapidiCat);
     CAT = { prodotti, lapidi: lapidiCat };
     const catJson = JSON.stringify(CAT, null, 2);
     if(!rCat || rCat.testo !== catJson)
       await ghScrivi(GH.repoDati, 'data/catalogo.json', catJson, rCat && rCat.sha, 'Aggiorna catalogo');
-    /* --- preventivi --- */
+  });
+}
+
+async function sincronizzaPreventivi(){
+  await riprovaConflittoGitHub(async ()=>{
     const rPrev = await ghLeggi(GH.repoDati, 'data/preventivi.json');
     const prevRemoto = rPrev ? JSON.parse(rPrev.testo) : { preventivi:[], lapidi:[] };
-    const lapidiPrev = fondiLapidi(PREV.lapidi, prevRemoto.lapidi);
-    const preventivi = fondiElementi(PREV.preventivi, prevRemoto.preventivi||[], lapidiPrev);
+    const lapidiPrev = fondiLapidi(PREV.lapidi||[], prevRemoto.lapidi||[]);
+    const preventivi = fondiElementi(PREV.preventivi||[], prevRemoto.preventivi||[], lapidiPrev);
     PREV = { preventivi, lapidi: lapidiPrev };
     const prevJson = JSON.stringify(PREV, null, 2);
     if(!rPrev || rPrev.testo !== prevJson)
       await ghScrivi(GH.repoDati, 'data/preventivi.json', prevJson, rPrev && rPrev.sha, 'Aggiorna preventivi');
+  });
+}
 
+async function sincronizza(spingi){
+  if(!ghPronto()){ aggiornaSyncUI('demo','Modalità demo (locale)'); return; }
+  aggiornaSyncUI('','Sincronizzazione…');
+  try{
+    await sincronizzaImpostazioni(spingi);
+    await sincronizzaCatalogo();
+    await sincronizzaPreventivi();
     salvaLS();
     aggiornaSyncUI('ok','Sincronizzato con GitHub');
     return true;
@@ -1031,14 +1105,17 @@ async function sincronizza(spingi){
     return false;
   }
 }
-let syncInCorso = null;
+
+let codaSync = Promise.resolve(true);
+function accodaSincronizzazione(spingi){
+  const lavoro = codaSync.then(()=>sincronizza(spingi));
+  codaSync = lavoro.catch(()=>false);
+  return lavoro;
+}
 async function salvaEsincronizza(){
   salvaLS();
-  if(!ghPronto()) return;
-  if(syncInCorso) await syncInCorso.catch(()=>{});
-  syncInCorso = sincronizza(true);
-  await syncInCorso;
-  syncInCorso = null;
+  if(!ghPronto()) return true;
+  return accodaSincronizzazione(true);
 }
 </script>
 <script>
@@ -1422,12 +1499,12 @@ function disegnaVoci(){
   }
   cont.innerHTML = Q.voci.map((v,i)=>
     '<div class="voce-riga" data-i="'+i+'">'
-    + '<input type="text" data-campo="descrizione" value="'+esc(v.descrizione)+'" placeholder="Descrizione" aria-label="Descrizione voce">'
-    + '<select data-campo="categoria" aria-label="Categoria">'+CATEGORIE.map(c=>'<option'+(c===v.categoria?' selected':'')+'>'+esc(c)+'</option>').join('')+'</select>'
-    + '<div style="display:flex;gap:4px;min-width:0"><input type="number" data-campo="qta" value="'+esc(v.qta)+'" min="0" step="0.5" style="flex:1" aria-label="Quantità"><select data-campo="unita" style="width:56px;flex:none" aria-label="Unità">'+UNITA.map(u=>'<option'+(u===v.unita?' selected':'')+'>'+u+'</option>').join('')+'</select></div>'
-    + '<input type="number" data-campo="prezzo" value="'+esc(v.prezzo)+'" min="0" step="0.01" aria-label="Prezzo unitario">'
-    + '<input type="number" data-campo="sconto" value="'+esc(v.sconto||'')+'" min="0" max="100" step="1" placeholder="0" aria-label="Sconto percentuale">'
-    + '<span class="voce-importo">'+euro(importoVoce(v))+'</span>'
+    + '<label class="voce-campo voce-descrizione"><span class="voce-etichetta">Descrizione</span><input type="text" data-campo="descrizione" value="'+esc(v.descrizione)+'" placeholder="Descrizione" aria-label="Descrizione voce"></label>'
+    + '<label class="voce-campo voce-categoria"><span class="voce-etichetta">Categoria</span><select data-campo="categoria" aria-label="Categoria">'+CATEGORIE.map(c=>'<option'+(c===v.categoria?' selected':'')+'>'+esc(c)+'</option>').join('')+'</select></label>'
+    + '<label class="voce-campo voce-quantita"><span class="voce-etichetta">Quantità / unità</span><span class="voce-qta-controlli"><input type="number" data-campo="qta" value="'+esc(v.qta)+'" min="0" step="0.5" aria-label="Quantità"><select data-campo="unita" aria-label="Unità">'+UNITA.map(u=>'<option'+(u===v.unita?' selected':'')+'>'+u+'</option>').join('')+'</select></span></label>'
+    + '<label class="voce-campo voce-prezzo"><span class="voce-etichetta">Prezzo unitario</span><span class="input-con-affisso valuta"><input type="number" data-campo="prezzo" value="'+esc(v.prezzo)+'" min="0" step="0.01" aria-label="Prezzo unitario"></span></label>'
+    + '<label class="voce-campo voce-sconto"><span class="voce-etichetta">Sconto</span><span class="input-con-affisso percentuale"><input type="number" data-campo="sconto" value="'+esc(v.sconto||'')+'" min="0" max="100" step="1" placeholder="0" aria-label="Sconto percentuale"></span></label>'
+    + '<div class="voce-campo voce-importo-campo"><span class="voce-etichetta">Importo</span><output class="voce-importo">'+euro(importoVoce(v))+'</output></div>'
     + '<div class="voce-strumenti">'
     + '<button class="btn-icona" data-azione="su" title="Sposta su"'+(i===0?' disabled style="opacity:.3"':'')+'><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg></button>'
     + '<button class="btn-icona" data-azione="giu" title="Sposta giù"'+(i===Q.voci.length-1?' disabled style="opacity:.3"':'')+'><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>'
@@ -1503,7 +1580,8 @@ $('#lista-modale-catalogo').addEventListener('click', e=>{
 /* Totali */
 function disegnaTotali(){
   const t = totaliPreventivo(Q);
-  let html = '<div class="totali-riga"><span class="etichetta">Totale voci</span><span class="valore">'+euro(t.totaleVoci)+'</span></div>';
+  let html = '<div class="totali-titolo">Riepilogo costi</div>'
+    + '<div class="totali-riga"><span class="etichetta">Totale voci</span><span class="valore">'+euro(t.totaleVoci)+'</span></div>';
   if(t.sconto>0) html += '<div class="totali-riga"><span class="etichetta">Sconto finale '+pct(Q.scontoFinale)+'</span><span class="valore" style="color:var(--rosso)">−'+euro(t.sconto).replace('−','')+'</span></div>';
   html += '<div class="totali-riga"><span class="etichetta">Imponibile</span><span class="valore">'+euro(t.imponibile)+'</span></div>'
     + '<div class="totali-riga"><span class="etichetta">IVA '+Q.iva+'%</span><span class="valore">'+euro(t.iva)+'</span></div>'
@@ -1564,10 +1642,10 @@ $('#btn-pubblica').addEventListener('click', async ()=>{
     if(!Q.slug) Q.slug = Q.numero.toLowerCase() + '-' + suffissoCasuale();
     const percorso = 'p/' + Q.slug + '.html';
     const html = paginaCliente(Q, IMP);
-    let sha;
-    try{ const r = await ghLeggi(GH.repoPagine, percorso); sha = r && r.sha; }
-    catch(e){ sha = undefined; }
-    await ghScrivi(GH.repoPagine, percorso, html, sha, 'Pubblica preventivo '+Q.numero);
+    await riprovaConflittoGitHub(async ()=>{
+      const remoto = await ghLeggi(GH.repoPagine, percorso);
+      await ghScrivi(GH.repoPagine, percorso, html, remoto && remoto.sha, 'Pubblica preventivo '+Q.numero);
+    });
     Q.pubblicatoUrl = 'https://' + GH.utente + '.github.io/' + GH.repoPagine + '/' + percorso;
     if(Q.stato==='bozza'){ Q.stato = 'inviato'; $('#e-stato').value = 'inviato'; aggiornaBadgeEditor(); }
     salvaPreventivo(true);
@@ -1940,7 +2018,7 @@ $('#btn-gh-collega').addEventListener('click', async ()=>{
     if(repoPagine) await test(repoPagine);
     GH = { token, utente, repoDati, repoPagine, branch, attivo:true };
     salvaLS();
-    const ok = await sincronizza(true);
+    const ok = await accodaSincronizzazione(true);
     if(ok){
       mostraStatoGH('ok','Collegato. Primo allineamento completato: archivio e catalogo ora sono condivisi.'+(repoPagine?'':' (Repository pagine non indicato: la pubblicazione online resta disattivata.)'));
       $('#btn-gh-scollega').style.display = '';
@@ -1973,7 +2051,7 @@ $('#btn-gh-scollega').addEventListener('click', ()=>{
 caricaStato();
 disegnaArchivio();
 if(ghPronto()){
-  sincronizza(false).then(ok=>{ if(ok) disegnaArchivio(); });
+  accodaSincronizzazione(false).then(ok=>{ if(ok) disegnaArchivio(); });
 } else {
   aggiornaSyncUI('demo','Modalità demo (locale)');
 }
