@@ -1,0 +1,1988 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Preventivi · schläfer — Isme Service</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800&family=Barlow+Semi+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ============ Token brand Schläfer / ISME ============ */
+:root{
+  --rosso:#CA003A; --rosso-600:#A80031; --rosso-700:#7D0025;
+  --blu:#0076BB; --blu-600:#005E96;
+  --ink:#1C2120; --testo:#2C3231; --muted:#6F7675;
+  --bordo:#DEE1E0; --bordo-forte:#C2C7C6;
+  --fill:#F0F2F1; --pagina:#F7F8F8; --bianco:#FFFFFF;
+  --ok:#2A9358; --warn:#E8A400; --err:#D42234; --info:#0076BB;
+  --focus:0 0 0 3px rgba(0,118,187,.30);
+  --r-tag:4px; --r:8px; --r-md:10px; --r-lg:16px; --r-pill:999px;
+  --ease:cubic-bezier(.2,0,0,1);
+  --t1:120ms; --t2:180ms; --t3:280ms;
+  --ombra:0 1px 2px rgba(44,50,49,.05), 0 4px 14px rgba(44,50,49,.07);
+  --ombra-su:0 2px 4px rgba(44,50,49,.06), 0 10px 24px rgba(44,50,49,.10);
+  --font-ui:'Barlow',sans-serif;
+  --font-cond:'Barlow Semi Condensed',sans-serif;
+  --font-mono:'IBM Plex Mono',monospace;
+  --sidebar-w:236px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{font-family:var(--font-ui);color:var(--testo);background:var(--pagina);font-size:15px;line-height:1.5}
+img{max-width:100%;display:block}
+button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input,select,textarea{font:inherit;color:var(--ink)}
+:focus{outline:none}
+:focus-visible{box-shadow:var(--focus);border-radius:var(--r-tag)}
+::placeholder{color:#9AA09F}
+
+/* ============ Tipografia utility ============ */
+.eyebrow{font-family:var(--font-cond);font-weight:600;font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.mono{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+
+/* ============ Sidebar ============ */
+#sidebar{position:fixed;inset:0 auto 0 0;width:var(--sidebar-w);background:var(--ink);color:#E7E9E8;display:flex;flex-direction:column;z-index:40;transition:transform var(--t3) var(--ease)}
+.marchio{padding:22px 20px 18px;border-bottom:1px solid rgba(255,255,255,.08)}
+.marchio .wordmark{font-weight:800;font-size:26px;letter-spacing:-.01em;color:#fff;line-height:1}
+.marchio .wordmark i{font-style:normal;color:var(--rosso)}
+.marchio .payoff{font-family:var(--font-cond);font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:#8D9492;margin-top:6px}
+#sidebar nav{padding:14px 10px;display:flex;flex-direction:column;gap:2px;flex:1}
+.nav-voce{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:var(--r);color:#C6CBCA;font-weight:500;font-size:15px;position:relative;text-align:left;transition:background var(--t1) var(--ease),color var(--t1) var(--ease)}
+.nav-voce svg{width:18px;height:18px;flex:none}
+.nav-voce:hover{background:rgba(255,255,255,.06);color:#fff}
+.nav-voce.attiva{background:rgba(255,255,255,.08);color:#fff}
+.nav-voce.attiva::before{content:"";position:absolute;left:-10px;top:8px;bottom:8px;width:3px;border-radius:2px;background:var(--rosso)}
+.sync-box{padding:14px 16px;border-top:1px solid rgba(255,255,255,.08);font-size:12.5px;color:#8D9492;display:flex;align-items:center;gap:8px}
+.sync-pallino{width:8px;height:8px;border-radius:50%;background:var(--warn);flex:none}
+.sync-pallino.ok{background:var(--ok)}
+.sync-pallino.errore{background:var(--err)}
+
+/* ============ Layout principale ============ */
+#contenuto{margin-left:var(--sidebar-w);min-height:100vh;display:flex;flex-direction:column}
+.vista{display:none;flex:1;flex-direction:column}
+.vista.attiva{display:flex}
+.vista-testata{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:20px 28px;background:var(--bianco);border-bottom:1px solid var(--bordo)}
+.vista-testata h1{font-size:21px;font-weight:700;color:var(--ink);letter-spacing:-.01em}
+.vista-testata .spinta{margin-left:auto;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.vista-corpo{padding:24px 28px;flex:1}
+
+/* ============ Bottoni ============ */
+.btn{display:inline-flex;align-items:center;gap:8px;font-weight:600;font-size:14px;padding:9px 16px;border-radius:var(--r);border:1px solid transparent;transition:background var(--t1) var(--ease),border-color var(--t1) var(--ease),color var(--t1) var(--ease),box-shadow var(--t1) var(--ease)}
+.btn svg{width:16px;height:16px}
+.btn:active{transform:translateY(1px)}
+.btn:focus-visible{box-shadow:var(--focus)}
+.btn-rosso{background:var(--rosso);color:#fff}
+.btn-rosso:hover{background:var(--rosso-600)}
+.btn-blu{background:var(--blu);color:#fff}
+.btn-blu:hover{background:var(--blu-600)}
+.btn-secondario{background:var(--bianco);color:var(--ink);border-color:var(--bordo-forte)}
+.btn-secondario:hover{border-color:var(--muted);background:var(--fill)}
+.btn-fantasma{color:var(--blu);padding:6px 10px}
+.btn-fantasma:hover{background:rgba(0,118,187,.08)}
+.btn-pericolo-fantasma{color:var(--err);padding:6px 10px}
+.btn-pericolo-fantasma:hover{background:rgba(212,34,52,.08)}
+.btn[disabled]{opacity:.45;pointer-events:none}
+.btn-icona{padding:8px;border-radius:var(--r);color:var(--muted);border:1px solid transparent}
+.btn-icona:hover{background:var(--fill);color:var(--ink)}
+.btn-icona svg{width:16px;height:16px;display:block}
+
+/* ============ Campi form ============ */
+.campo{display:flex;flex-direction:column;gap:5px;min-width:0}
+.campo>label{font-family:var(--font-cond);font-weight:600;font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.campo input,.campo select,.campo textarea{background:var(--bianco);border:1px solid var(--bordo-forte);border-radius:var(--r);padding:8px 11px;font-size:14.5px;width:100%;transition:border-color var(--t1) var(--ease),box-shadow var(--t1) var(--ease)}
+.campo textarea{resize:vertical;min-height:70px;line-height:1.45}
+.campo input:focus,.campo select:focus,.campo textarea:focus{border-color:var(--blu);box-shadow:var(--focus)}
+.campo input[type=number]{font-family:var(--font-mono);font-size:14px}
+.campo .aiuto{font-size:12.5px;color:var(--muted);letter-spacing:0;text-transform:none;font-family:var(--font-ui);font-weight:400}
+.griglia{display:grid;gap:14px}
+.g2{grid-template-columns:1fr 1fr}
+.g3{grid-template-columns:1fr 1fr 1fr}
+.g4{grid-template-columns:repeat(4,1fr)}
+
+/* ============ Card / pannelli ============ */
+.pannello{background:var(--bianco);border:1px solid var(--bordo);border-radius:var(--r-md);box-shadow:var(--ombra)}
+.pannello-testata{padding:14px 18px;border-bottom:1px solid var(--bordo);display:flex;align-items:center;gap:10px}
+.pannello-testata h2{font-family:var(--font-cond);font-weight:600;font-size:12.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink)}
+.pannello-corpo{padding:18px}
+
+/* ============ Badge stato ============ */
+.badge{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-cond);font-weight:600;font-size:11.5px;letter-spacing:.07em;text-transform:uppercase;padding:3px 10px;border-radius:var(--r-pill);border:1px solid transparent}
+.badge::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.badge-bozza{color:var(--muted);background:var(--fill);border-color:var(--bordo)}
+.badge-inviato{color:var(--info);background:rgba(0,118,187,.08);border-color:rgba(0,118,187,.25)}
+.badge-accettato{color:var(--ok);background:rgba(42,147,88,.09);border-color:rgba(42,147,88,.28)}
+.badge-rifiutato{color:var(--err);background:rgba(212,34,52,.07);border-color:rgba(212,34,52,.25)}
+
+/* ============ Archivio ============ */
+.filtri-riga{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:18px}
+.cerca{position:relative;flex:1;min-width:220px;max-width:380px}
+.cerca svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);width:16px;height:16px;color:var(--muted);pointer-events:none}
+.cerca input{width:100%;background:var(--bianco);border:1px solid var(--bordo-forte);border-radius:var(--r);padding:9px 12px 9px 36px;font-size:14.5px}
+.cerca input:focus{border-color:var(--blu);box-shadow:var(--focus)}
+.chip{font-family:var(--font-cond);font-weight:600;font-size:12px;letter-spacing:.07em;text-transform:uppercase;padding:6px 14px;border-radius:var(--r-pill);border:1px solid var(--bordo-forte);background:var(--bianco);color:var(--muted);transition:all var(--t1) var(--ease)}
+.chip:hover{border-color:var(--muted);color:var(--ink)}
+.chip.attivo{background:var(--ink);border-color:var(--ink);color:#fff}
+.tabella-wrap{background:var(--bianco);border:1px solid var(--bordo);border-radius:var(--r-md);box-shadow:var(--ombra);overflow-x:auto}
+table.elenco{width:100%;border-collapse:collapse;min-width:760px}
+table.elenco th{font-family:var(--font-cond);font-weight:600;font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);text-align:left;padding:12px 16px;border-bottom:1px solid var(--bordo);white-space:nowrap}
+table.elenco td{padding:13px 16px;border-bottom:1px solid var(--bordo);vertical-align:middle}
+table.elenco tbody tr:last-child td{border-bottom:none}
+table.elenco tbody tr{transition:background var(--t1) var(--ease)}
+table.elenco tbody tr:hover{background:var(--pagina)}
+td.num,th.num{text-align:right;font-family:var(--font-mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.cella-numero{font-family:var(--font-mono);font-weight:600;font-size:13.5px;color:var(--ink);white-space:nowrap}
+.cella-cliente{font-weight:600;color:var(--ink)}
+.cella-sub{font-size:12.5px;color:var(--muted);font-weight:400}
+.cella-azioni{display:flex;gap:2px;justify-content:flex-end}
+.vuoto{padding:56px 24px;text-align:center;color:var(--muted)}
+.vuoto svg{width:34px;height:34px;margin:0 auto 12px;display:block;color:var(--bordo-forte)}
+.vuoto strong{display:block;color:var(--ink);font-size:16px;margin-bottom:4px}
+
+/* ============ Catalogo ============ */
+.cat-griglia{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
+.prodotto-card{background:var(--bianco);border:1px solid var(--bordo);border-radius:var(--r-md);box-shadow:var(--ombra);overflow:hidden;display:flex;flex-direction:column;transition:transform var(--t2) var(--ease),box-shadow var(--t2) var(--ease)}
+.prodotto-card:hover{transform:translateY(-2px);box-shadow:var(--ombra-su)}
+.prodotto-foto{aspect-ratio:4/3;background:var(--fill);overflow:hidden}
+.prodotto-foto img{width:100%;height:100%;object-fit:cover}
+.prodotto-info{padding:14px 16px;display:flex;flex-direction:column;gap:6px;flex:1}
+.prodotto-cat{font-family:var(--font-cond);font-weight:600;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:var(--fill);border-radius:var(--r-tag);padding:2px 7px;align-self:flex-start}
+.prodotto-nome{font-weight:700;font-size:15.5px;color:var(--ink);line-height:1.3}
+.prodotto-descr{font-size:13px;color:var(--muted);line-height:1.45;flex:1}
+.prodotto-piede{display:flex;align-items:baseline;justify-content:space-between;margin-top:6px;gap:8px}
+.prodotto-prezzo{font-weight:800;font-size:17px;color:var(--rosso);font-variant-numeric:tabular-nums}
+.prodotto-unita{font-family:var(--font-mono);font-size:12px;color:var(--muted)}
+.prodotto-azioni{display:flex;border-top:1px solid var(--bordo)}
+.prodotto-azioni button{flex:1;padding:9px;font-weight:600;font-size:13px;color:var(--blu);transition:background var(--t1) var(--ease)}
+.prodotto-azioni button:hover{background:rgba(0,118,187,.07)}
+.prodotto-azioni button.rossa{color:var(--err);border-left:1px solid var(--bordo)}
+.prodotto-azioni button.rossa:hover{background:rgba(212,34,52,.06)}
+
+/* ============ Editor ============ */
+#vista-editor .vista-corpo{padding:0;display:flex;min-height:0;flex:1}
+.editor-colonna{flex:1 1 54%;min-width:0;overflow-y:auto;padding:22px 24px 80px;display:flex;flex-direction:column;gap:18px}
+.anteprima-colonna{flex:1 1 46%;min-width:0;border-left:1px solid var(--bordo);background:#E4E7E6;display:flex;flex-direction:column;position:sticky;top:0;height:calc(100vh - 66px)}
+.anteprima-barra{padding:9px 16px;background:var(--ink);color:#C6CBCA;font-family:var(--font-cond);font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;display:flex;align-items:center;gap:10px}
+.anteprima-barra .pallino{width:7px;height:7px;border-radius:50%;background:var(--ok)}
+#iframe-anteprima,#iframe-anteprima-mobile{flex:1;width:100%;border:none;background:#fff}
+.voci-lista{display:flex;flex-direction:column}
+.voce-riga{display:grid;grid-template-columns:minmax(0,2.2fr) 92px 74px 96px 70px 96px auto;gap:8px;align-items:center;padding:10px 0;border-bottom:1px solid var(--bordo)}
+.voce-riga input,.voce-riga select{background:var(--bianco);border:1px solid var(--bordo-forte);border-radius:var(--r-tag);padding:6px 8px;font-size:13.5px;width:100%;min-width:0}
+.voce-riga input:focus,.voce-riga select:focus{border-color:var(--blu);box-shadow:var(--focus)}
+.voce-riga input[type=number]{font-family:var(--font-mono);font-size:13px;text-align:right}
+.voce-importo{font-family:var(--font-mono);font-weight:600;font-size:13.5px;text-align:right;white-space:nowrap;color:var(--ink)}
+.voce-strumenti{display:flex;gap:0}
+.voce-strumenti .btn-icona{padding:5px}
+.voce-strumenti .btn-icona svg{width:14px;height:14px}
+.voce-intestazioni{display:grid;grid-template-columns:minmax(0,2.2fr) 92px 74px 96px 70px 96px auto;gap:8px;padding:0 0 6px;font-family:var(--font-cond);font-weight:600;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.voce-intestazioni span:nth-child(n+3){text-align:right}
+.totali-blocco{margin-left:auto;width:100%;max-width:330px;display:flex;flex-direction:column;gap:7px;padding-top:14px}
+.totali-riga{display:flex;justify-content:space-between;align-items:baseline;font-size:14px}
+.totali-riga .etichetta{color:var(--muted)}
+.totali-riga .valore{font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-weight:500}
+.totali-riga.finale{border-top:2px solid var(--ink);padding-top:10px;margin-top:4px}
+.totali-riga.finale .etichetta{font-family:var(--font-cond);font-weight:700;font-size:13px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink)}
+.totali-riga.finale .valore{font-family:var(--font-ui);font-weight:800;font-size:22px;color:var(--rosso)}
+.foto-griglia{display:flex;gap:10px;flex-wrap:wrap}
+.foto-slot{width:110px;height:82px;border-radius:var(--r);overflow:hidden;position:relative;border:1px solid var(--bordo);background:var(--fill)}
+.foto-slot img{width:100%;height:100%;object-fit:cover}
+.foto-slot .rimuovi{position:absolute;top:4px;right:4px;background:rgba(28,33,32,.75);color:#fff;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center}
+.foto-slot .rimuovi svg{width:12px;height:12px}
+.foto-slot .tag-hero{position:absolute;left:0;bottom:0;right:0;background:rgba(202,0,58,.9);color:#fff;font-family:var(--font-cond);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;text-align:center;padding:2px}
+.foto-aggiungi{width:110px;height:82px;border:1.5px dashed var(--bordo-forte);border-radius:var(--r);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:var(--muted);font-size:11.5px;font-weight:600;transition:all var(--t1) var(--ease)}
+.foto-aggiungi:hover{border-color:var(--blu);color:var(--blu)}
+.foto-aggiungi svg{width:18px;height:18px}
+#btn-anteprima-mobile{display:none;position:fixed;right:18px;bottom:18px;z-index:45;box-shadow:var(--ombra-su);border-radius:var(--r-pill);padding:13px 20px}
+#anteprima-mobile{display:none;position:fixed;inset:0;z-index:60;background:#fff;flex-direction:column}
+#anteprima-mobile.aperta{display:flex}
+#anteprima-mobile .anteprima-barra{justify-content:space-between}
+#anteprima-mobile .anteprima-barra button{color:#fff;display:flex;align-items:center;gap:6px;font-family:var(--font-ui);font-size:13px;font-weight:600;letter-spacing:0;text-transform:none}
+
+/* ============ Modali ============ */
+.modale-fondo{display:none;position:fixed;inset:0;background:rgba(28,33,32,.55);z-index:70;align-items:flex-start;justify-content:center;padding:6vh 16px;overflow-y:auto}
+.modale-fondo.aperta{display:flex;animation:comparsa var(--t2) var(--ease)}
+@keyframes comparsa{from{opacity:0}to{opacity:1}}
+.modale{background:var(--bianco);border-radius:var(--r-lg);box-shadow:var(--ombra-su);width:100%;max-width:560px;animation:salita var(--t3) var(--ease)}
+@keyframes salita{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.modale-testata{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px solid var(--bordo)}
+.modale-testata h2{font-size:17px;font-weight:700;color:var(--ink)}
+.modale-corpo{padding:20px 22px;display:flex;flex-direction:column;gap:14px}
+.modale-piede{padding:14px 22px;border-top:1px solid var(--bordo);display:flex;justify-content:flex-end;gap:10px}
+.scelta-lista{max-height:46vh;overflow-y:auto;display:flex;flex-direction:column;border:1px solid var(--bordo);border-radius:var(--r)}
+.scelta-voce{display:flex;align-items:center;gap:12px;padding:10px 12px;border-bottom:1px solid var(--bordo);text-align:left;transition:background var(--t1) var(--ease)}
+.scelta-voce:last-child{border-bottom:none}
+.scelta-voce:hover{background:var(--pagina)}
+.scelta-voce img{width:46px;height:36px;object-fit:cover;border-radius:var(--r-tag);border:1px solid var(--bordo);flex:none;background:var(--fill)}
+.scelta-voce .sv-info{flex:1;min-width:0}
+.scelta-voce .sv-nome{font-weight:600;font-size:14px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.scelta-voce .sv-cat{font-size:11.5px;color:var(--muted)}
+.scelta-voce .sv-prezzo{font-family:var(--font-mono);font-size:13px;font-weight:600;color:var(--rosso);white-space:nowrap}
+
+/* ============ Toast ============ */
+#toast-zona{position:fixed;right:18px;bottom:18px;z-index:90;display:flex;flex-direction:column;gap:8px;align-items:flex-end}
+.toast{background:var(--ink);color:#fff;padding:11px 16px;border-radius:var(--r-md);box-shadow:var(--ombra-su);font-size:14px;font-weight:500;display:flex;align-items:center;gap:9px;max-width:360px;animation:salita var(--t3) var(--ease)}
+.toast svg{width:16px;height:16px;flex:none}
+.toast.ok svg{color:var(--ok)}
+.toast.errore svg{color:#FF7A87}
+
+/* ============ Impostazioni ============ */
+.imp-griglia{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start;max-width:1100px}
+.logo-anteprima{height:44px;background:var(--fill);border:1px solid var(--bordo);border-radius:var(--r);display:flex;align-items:center;padding:6px 12px;gap:12px}
+.logo-anteprima img{max-height:32px;max-width:180px;object-fit:contain}
+.guida{font-size:13.5px;color:var(--testo);line-height:1.65}
+.guida ol{padding-left:20px;display:flex;flex-direction:column;gap:8px;margin:10px 0}
+.guida code{font-family:var(--font-mono);font-size:12px;background:var(--fill);border:1px solid var(--bordo);border-radius:var(--r-tag);padding:1px 5px}
+.guida a{color:var(--blu)}
+details.blocco-guida{border:1px solid var(--bordo);border-radius:var(--r);background:var(--pagina)}
+details.blocco-guida summary{cursor:pointer;padding:11px 14px;font-weight:600;font-size:13.5px;color:var(--blu);list-style:none;display:flex;align-items:center;gap:8px}
+details.blocco-guida summary svg{width:15px;height:15px;transition:transform var(--t2) var(--ease)}
+details.blocco-guida[open] summary svg{transform:rotate(90deg)}
+details.blocco-guida .guida{padding:0 16px 14px}
+.stato-github{font-size:13px;padding:9px 12px;border-radius:var(--r);border:1px solid var(--bordo);background:var(--pagina);display:flex;gap:8px;align-items:flex-start;line-height:1.5}
+.stato-github.ok{border-color:rgba(42,147,88,.4);background:rgba(42,147,88,.06);color:var(--ok)}
+.stato-github.errore{border-color:rgba(212,34,52,.35);background:rgba(212,34,52,.05);color:var(--err)}
+
+/* ============ Mobile ============ */
+#apri-menu{display:none;position:fixed;top:14px;left:14px;z-index:50;background:var(--ink);color:#fff;border-radius:var(--r);padding:10px;box-shadow:var(--ombra-su)}
+#apri-menu svg{width:18px;height:18px;display:block}
+#velo-menu{display:none;position:fixed;inset:0;background:rgba(28,33,32,.5);z-index:39}
+@media (max-width:1060px){
+  .anteprima-colonna{display:none}
+  #btn-anteprima-mobile{display:inline-flex}
+  .editor-colonna{padding:20px 18px 90px}
+}
+@media (max-width:840px){
+  #sidebar{transform:translateX(-100%)}
+  #sidebar.aperta{transform:none}
+  body.menu-aperto #velo-menu{display:block}
+  #apri-menu{display:block}
+  #contenuto{margin-left:0}
+  .vista-testata{padding:16px 16px 16px 64px}
+  .vista-corpo{padding:16px}
+  .g2,.g3,.g4{grid-template-columns:1fr}
+  .imp-griglia{grid-template-columns:1fr}
+  .voce-intestazioni{display:none}
+  .voce-riga{grid-template-columns:1fr 1fr;grid-auto-rows:auto}
+  .voce-riga>*:first-child{grid-column:1/-1}
+  .voce-strumenti{grid-column:1/-1;justify-content:flex-end}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+}
+</style>
+</head>
+<body>
+<button id="apri-menu" aria-label="Apri menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg></button>
+<div id="velo-menu"></div>
+
+<aside id="sidebar">
+  <div class="marchio">
+    <div class="wordmark">schl<i>ä</i>fer</div>
+    <div class="payoff">Der HeimwerkerProfi</div>
+  </div>
+  <nav>
+    <button class="nav-voce attiva" data-vista="archivio">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8v13H3V8"/><path d="M1 3h22v5H1z"/><path d="M10 12h4"/></svg>
+      Archivio preventivi
+    </button>
+    <button class="nav-voce" data-vista="catalogo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16.5 9.4 7.55 4.24"/><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.29 7 12 12 20.71 7"/><line x1="12" y1="22" x2="12" y2="12"/></svg>
+      Catalogo
+    </button>
+    <button class="nav-voce" data-vista="editor" id="nav-editor">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4Z"/></svg>
+      Nuovo preventivo
+    </button>
+    <button class="nav-voce" data-vista="impostazioni">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+      Impostazioni
+    </button>
+  </nav>
+  <div class="sync-box"><span class="sync-pallino" id="sync-pallino"></span><span id="sync-testo">Modalità demo (locale)</span></div>
+</aside>
+
+<div id="contenuto">
+
+  <!-- ===== ARCHIVIO ===== -->
+  <section class="vista attiva" id="vista-archivio">
+    <div class="vista-testata">
+      <h1>Archivio preventivi</h1>
+      <div class="spinta">
+        <button class="btn btn-rosso" id="btn-nuovo-preventivo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Nuovo preventivo
+        </button>
+      </div>
+    </div>
+    <div class="vista-corpo">
+      <div class="filtri-riga">
+        <div class="cerca">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="search" id="cerca-preventivi" placeholder="Cerca per cliente o numero…" aria-label="Cerca preventivi">
+        </div>
+        <button class="chip attivo" data-stato="">Tutti</button>
+        <button class="chip" data-stato="bozza">Bozze</button>
+        <button class="chip" data-stato="inviato">Inviati</button>
+        <button class="chip" data-stato="accettato">Accettati</button>
+        <button class="chip" data-stato="rifiutato">Rifiutati</button>
+      </div>
+      <div class="tabella-wrap">
+        <table class="elenco" id="tabella-archivio">
+          <thead><tr>
+            <th>Numero</th><th>Cliente</th><th>Data</th><th>Venditore</th><th class="num">Totale</th><th>Stato</th><th></th>
+          </tr></thead>
+          <tbody id="corpo-archivio"></tbody>
+        </table>
+        <div class="vuoto" id="archivio-vuoto" style="display:none">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8v13H3V8"/><path d="M1 3h22v5H1z"/><path d="M10 12h4"/></svg>
+          <strong>Nessun preventivo trovato</strong>
+          Crea il primo con "Nuovo preventivo" qui sopra.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CATALOGO ===== -->
+  <section class="vista" id="vista-catalogo">
+    <div class="vista-testata">
+      <h1>Catalogo</h1>
+      <div class="spinta">
+        <button class="btn btn-rosso" id="btn-nuovo-prodotto">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Nuovo prodotto
+        </button>
+      </div>
+    </div>
+    <div class="vista-corpo">
+      <div class="filtri-riga" id="filtri-catalogo"></div>
+      <div class="cat-griglia" id="griglia-catalogo"></div>
+      <div class="vuoto" id="catalogo-vuoto" style="display:none">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+        <strong>Nessun prodotto in questa categoria</strong>
+        Aggiungilo con "Nuovo prodotto".
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== EDITOR ===== -->
+  <section class="vista" id="vista-editor">
+    <div class="vista-testata">
+      <button class="btn-icona" id="btn-torna-archivio" title="Torna all'archivio">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      </button>
+      <h1 id="editor-titolo" class="mono" style="font-size:18px">Q-2026-001</h1>
+      <span class="badge badge-bozza" id="editor-badge">Bozza</span>
+      <div class="spinta">
+        <div class="campo" style="flex-direction:row;align-items:center;gap:8px">
+          <label for="e-stato" style="margin:0">Stato</label>
+          <select id="e-stato" style="width:auto">
+            <option value="bozza">Bozza</option>
+            <option value="inviato">Inviato</option>
+            <option value="accettato">Accettato</option>
+            <option value="rifiutato">Rifiutato</option>
+          </select>
+        </div>
+        <button class="btn btn-secondario" id="btn-scarica-html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Scarica .html
+        </button>
+        <button class="btn btn-blu" id="btn-pubblica">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M12 12v9"/><path d="m16 16-4-4-4 4"/></svg>
+          Pubblica
+        </button>
+        <button class="btn btn-rosso" id="btn-salva">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+          Salva
+        </button>
+      </div>
+    </div>
+    <div class="vista-corpo">
+      <div class="editor-colonna">
+
+        <div class="pannello">
+          <div class="pannello-testata"><h2>Cliente e dati generali</h2></div>
+          <div class="pannello-corpo griglia" style="gap:14px">
+            <div class="griglia g2">
+              <div class="campo"><label for="e-cliente-nome">Nome cliente</label><input id="e-cliente-nome" type="text" placeholder="Es. Marco Rossi"></div>
+              <div class="campo"><label for="e-cliente-telefono">Telefono</label><input id="e-cliente-telefono" type="tel" placeholder="Es. 333 1234567"></div>
+            </div>
+            <div class="griglia g2">
+              <div class="campo"><label for="e-cliente-email">Email</label><input id="e-cliente-email" type="email" placeholder="cliente@esempio.it"></div>
+              <div class="campo"><label for="e-cliente-indirizzo">Indirizzo cantiere</label><input id="e-cliente-indirizzo" type="text" placeholder="Via, numero, comune"></div>
+            </div>
+            <div class="griglia g4">
+              <div class="campo"><label for="e-venditore">Venditore</label><select id="e-venditore"></select></div>
+              <div class="campo"><label for="e-data">Data</label><input id="e-data" type="date"></div>
+              <div class="campo"><label for="e-validita">Validità (giorni)</label><input id="e-validita" type="number" min="1" step="1"></div>
+              <div class="campo"><label for="e-iva">Aliquota IVA</label>
+                <select id="e-iva"><option value="10">10% — ristrutturazioni</option><option value="22">22% — ordinaria</option></select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pannello">
+          <div class="pannello-testata"><h2>Pagina per il cliente</h2></div>
+          <div class="pannello-corpo griglia" style="gap:14px">
+            <div class="campo"><label for="e-titolo">Titolo pagina</label><input id="e-titolo" type="text" placeholder="Il nuovo bagno di {nome}"></div>
+            <div class="campo"><label for="e-intro">Testo introduttivo</label><textarea id="e-intro" rows="3"></textarea></div>
+            <div class="campo"><label for="e-nota">Nota per il cliente</label><textarea id="e-nota" rows="2" placeholder="Es. Nel prezzo è inclusa la consegna al piano."></textarea></div>
+            <div class="campo">
+              <label>Foto ambientate (max 3 — la prima è l'immagine di apertura)</label>
+              <div class="foto-griglia" id="foto-griglia"></div>
+              <input type="file" id="input-foto" accept="image/*" multiple hidden>
+            </div>
+          </div>
+        </div>
+
+        <div class="pannello">
+          <div class="pannello-testata">
+            <h2>Voci del preventivo</h2>
+            <div style="margin-left:auto;display:flex;gap:8px">
+              <button class="btn btn-secondario" id="btn-voce-catalogo" style="padding:6px 12px;font-size:13px">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+                Dal catalogo
+              </button>
+              <button class="btn btn-secondario" id="btn-voce-libera" style="padding:6px 12px;font-size:13px">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Voce libera
+              </button>
+            </div>
+          </div>
+          <div class="pannello-corpo">
+            <div class="voce-intestazioni"><span>Descrizione</span><span>Categoria</span><span>Q.tà</span><span>Prezzo</span><span>Sconto</span><span>Importo</span><span></span></div>
+            <div class="voci-lista" id="voci-lista"></div>
+            <div class="griglia g2" style="margin-top:16px;align-items:end">
+              <div class="campo" style="max-width:200px"><label for="e-sconto">Sconto finale %</label><input id="e-sconto" type="number" min="0" max="100" step="0.5"></div>
+              <div class="totali-blocco" id="totali-blocco"></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="anteprima-colonna">
+        <div class="anteprima-barra"><span class="pallino"></span>Anteprima live — pagina cliente</div>
+        <iframe id="iframe-anteprima" title="Anteprima pagina cliente"></iframe>
+      </div>
+    </div>
+    <button class="btn btn-rosso" id="btn-anteprima-mobile">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+      Anteprima
+    </button>
+    <div id="anteprima-mobile">
+      <div class="anteprima-barra">
+        <span>Anteprima — pagina cliente</span>
+        <button id="chiudi-anteprima-mobile">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          Chiudi
+        </button>
+      </div>
+      <iframe id="iframe-anteprima-mobile" title="Anteprima pagina cliente"></iframe>
+    </div>
+  </section>
+
+  <!-- ===== IMPOSTAZIONI ===== -->
+  <section class="vista" id="vista-impostazioni">
+    <div class="vista-testata">
+      <h1>Impostazioni</h1>
+      <div class="spinta">
+        <button class="btn btn-rosso" id="btn-salva-impostazioni">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+          Salva impostazioni
+        </button>
+      </div>
+    </div>
+    <div class="vista-corpo">
+      <div class="imp-griglia">
+
+        <div class="pannello">
+          <div class="pannello-testata"><h2>Dati azienda</h2></div>
+          <div class="pannello-corpo griglia" style="gap:14px">
+            <div class="griglia g2">
+              <div class="campo"><label for="i-nome">Ragione sociale</label><input id="i-nome" type="text"></div>
+              <div class="campo"><label for="i-payoff">Payoff / brand</label><input id="i-payoff" type="text"></div>
+            </div>
+            <div class="campo"><label for="input-logo">Logo (file immagine)</label>
+              <div class="logo-anteprima"><img id="logo-anteprima" alt="" style="display:none"><span id="logo-mancante" style="font-size:12.5px;color:var(--muted)">Nessun logo caricato — nella pagina cliente compare il wordmark testuale.</span>
+                <button class="btn-fantasma" id="btn-carica-logo" style="margin-left:auto;font-size:13px;font-weight:600">Carica</button>
+                <button class="btn-pericolo-fantasma" id="btn-rimuovi-logo" style="font-size:13px;font-weight:600;display:none">Rimuovi</button>
+              </div>
+              <input type="file" id="input-logo" accept="image/*" hidden>
+            </div>
+            <div class="griglia g3">
+              <div class="campo"><label for="i-telefono">Telefono</label><input id="i-telefono" type="tel"></div>
+              <div class="campo"><label for="i-whatsapp">WhatsApp</label><input id="i-whatsapp" type="tel"><span class="aiuto">Con prefisso internazionale, es. +39…</span></div>
+              <div class="campo"><label for="i-email">Email</label><input id="i-email" type="email"></div>
+            </div>
+            <div class="griglia g3">
+              <div class="campo"><label for="i-indirizzo">Indirizzo</label><input id="i-indirizzo" type="text"></div>
+              <div class="campo"><label for="i-piva">P.IVA</label><input id="i-piva" type="text"></div>
+              <div class="campo"><label for="i-sito">Sito web</label><input id="i-sito" type="text" placeholder="www.esempio.it"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pannello">
+          <div class="pannello-testata"><h2>Default preventivi</h2></div>
+          <div class="pannello-corpo griglia" style="gap:14px">
+            <div class="griglia g2">
+              <div class="campo"><label for="i-iva">Aliquota IVA predefinita</label>
+                <select id="i-iva"><option value="10">10% — ristrutturazioni</option><option value="22">22% — ordinaria</option></select>
+              </div>
+              <div class="campo"><label for="i-validita">Validità predefinita (giorni)</label><input id="i-validita" type="number" min="1" step="1"></div>
+            </div>
+            <div class="campo"><label for="i-intro">Testo introduttivo predefinito</label><textarea id="i-intro" rows="3"></textarea></div>
+            <div class="campo"><label for="i-condizioni">Condizioni di vendita</label><textarea id="i-condizioni" rows="4"></textarea></div>
+            <div class="campo"><label for="i-venditori">Venditori (uno per riga)</label><textarea id="i-venditori" rows="4"></textarea></div>
+          </div>
+        </div>
+
+        <div class="pannello" style="grid-column:1/-1">
+          <div class="pannello-testata"><h2>Collegamento GitHub — dati condivisi e pubblicazione</h2></div>
+          <div class="pannello-corpo griglia" style="gap:14px">
+            <div class="griglia g2">
+              <div class="campo"><label for="i-gh-token">Fine-grained personal access token</label><input id="i-gh-token" type="password" autocomplete="off" placeholder="github_pat_…"><span class="aiuto">Salvato solo in questo browser (localStorage). Non finisce mai nei file sui repository.</span></div>
+              <div class="campo"><label for="i-gh-utente">Utente / organizzazione GitHub</label><input id="i-gh-utente" type="text" placeholder="es. ismeservice"></div>
+            </div>
+            <div class="griglia g3">
+              <div class="campo"><label for="i-gh-repo-dati">Repository dati (privato)</label><input id="i-gh-repo-dati" type="text" placeholder="es. preventivi-dati"></div>
+              <div class="campo"><label for="i-gh-repo-pagine">Repository pagine (pubblico)</label><input id="i-gh-repo-pagine" type="text" placeholder="es. preventivi-pagine"></div>
+              <div class="campo"><label for="i-gh-branch">Branch</label><input id="i-gh-branch" type="text" placeholder="main"></div>
+            </div>
+            <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+              <button class="btn btn-blu" id="btn-gh-collega">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                Collega e verifica
+              </button>
+              <button class="btn btn-secondario" id="btn-gh-scollega" style="display:none">Scollega</button>
+            </div>
+            <div class="stato-github" id="gh-stato" style="display:none"></div>
+            <details class="blocco-guida">
+              <summary><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>Guida al setup GitHub (una volta sola, 10 minuti)</summary>
+              <div class="guida">
+                <ol>
+                  <li><strong>Crea i due repository</strong> su <a href="https://github.com/new" target="_blank" rel="noopener">github.com/new</a>: uno <strong>privato</strong> per i dati (es. <code>preventivi-dati</code>) e uno <strong>pubblico</strong> per le pagine cliente (es. <code>preventivi-pagine</code>). In entrambi spunta "Add a README" così il branch <code>main</code> esiste subito.</li>
+                  <li><strong>Attiva GitHub Pages</strong> sul repo pubblico: Settings → Pages → Source "Deploy from a branch" → branch <code>main</code>, cartella <code>/ (root)</code> → Save.</li>
+                  <li><strong>Crea il token</strong>: github.com → Settings → Developer settings → Personal access tokens → <strong>Fine-grained tokens</strong> → Generate new token. Repository access: "Only select repositories" → seleziona solo i due repo. Permissions → Repository permissions → <strong>Contents: Read and write</strong>. Scadenza a piacere (alla scadenza basta rigenerarlo e reinserirlo qui).</li>
+                  <li><strong>Incolla qui</strong> token, utente e nomi dei repository, poi premi "Collega e verifica": l'app testa l'accesso e fa il primo allineamento dei dati.</li>
+                  <li>Sugli altri PC/tablet dei venditori: apri l'app, incolla lo stesso token (o uno dedicato) e premi di nuovo "Collega e verifica". Da quel momento archivio e catalogo sono condivisi.</li>
+                </ol>
+                Le pagine pubblicate saranno su <code>https://&lt;utente&gt;.github.io/&lt;repo-pagine&gt;/p/&lt;codice&gt;.html</code>. Il codice contiene un suffisso casuale: solo chi riceve il link può aprirle.
+              </div>
+            </details>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- ===== Modale: scegli dal catalogo ===== -->
+<div class="modale-fondo" id="modale-catalogo">
+  <div class="modale" role="dialog" aria-modal="true" aria-label="Aggiungi dal catalogo">
+    <div class="modale-testata">
+      <h2>Aggiungi dal catalogo</h2>
+      <button class="btn-icona" data-chiudi="modale-catalogo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modale-corpo">
+      <div class="cerca" style="max-width:none">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="search" id="cerca-modale-catalogo" placeholder="Cerca prodotto…" aria-label="Cerca prodotto">
+      </div>
+      <div class="scelta-lista" id="lista-modale-catalogo"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Modale: prodotto catalogo ===== -->
+<div class="modale-fondo" id="modale-prodotto">
+  <div class="modale" role="dialog" aria-modal="true" aria-label="Prodotto">
+    <div class="modale-testata">
+      <h2 id="modale-prodotto-titolo">Nuovo prodotto</h2>
+      <button class="btn-icona" data-chiudi="modale-prodotto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modale-corpo">
+      <div class="campo"><label for="p-nome">Nome prodotto</label><input id="p-nome" type="text"></div>
+      <div class="campo"><label for="p-categoria">Categoria</label><select id="p-categoria"></select></div>
+      <div class="campo"><label for="p-descrizione">Descrizione breve</label><textarea id="p-descrizione" rows="2"></textarea></div>
+      <div class="griglia g2">
+        <div class="campo"><label for="p-prezzo">Prezzo (IVA esclusa)</label><input id="p-prezzo" type="number" min="0" step="0.01"></div>
+        <div class="campo"><label for="p-unita">Unità</label>
+          <select id="p-unita"><option>pz</option><option>m²</option><option>m</option><option>h</option><option>corpo</option></select>
+        </div>
+      </div>
+      <div class="campo"><label>Foto</label>
+        <div style="display:flex;gap:12px;align-items:center">
+          <div class="foto-slot" style="width:130px;height:96px"><img id="p-foto-anteprima" alt=""></div>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <button class="btn btn-secondario" id="btn-carica-foto-prodotto" style="padding:6px 12px;font-size:13px">Carica foto</button>
+            <button class="btn-pericolo-fantasma" id="btn-rimuovi-foto-prodotto" style="font-size:13px;text-align:left">Usa segnaposto</button>
+          </div>
+        </div>
+        <input type="file" id="input-foto-prodotto" accept="image/*" hidden>
+      </div>
+    </div>
+    <div class="modale-piede">
+      <button class="btn btn-secondario" data-chiudi="modale-prodotto">Annulla</button>
+      <button class="btn btn-rosso" id="btn-salva-prodotto">Salva prodotto</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Modale: conferma ===== -->
+<div class="modale-fondo" id="modale-conferma">
+  <div class="modale" style="max-width:420px" role="alertdialog" aria-modal="true" aria-label="Conferma">
+    <div class="modale-corpo" style="padding-top:24px">
+      <p id="conferma-testo" style="font-size:15px;color:var(--ink)"></p>
+    </div>
+    <div class="modale-piede">
+      <button class="btn btn-secondario" data-chiudi="modale-conferma">Annulla</button>
+      <button class="btn btn-rosso" id="btn-conferma-ok">Elimina</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Modale: link pubblicato ===== -->
+<div class="modale-fondo" id="modale-link">
+  <div class="modale" style="max-width:520px" role="dialog" aria-modal="true" aria-label="Pagina pubblicata">
+    <div class="modale-testata">
+      <h2>Pagina pubblicata</h2>
+      <button class="btn-icona" data-chiudi="modale-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modale-corpo">
+      <p style="font-size:14px">Il preventivo è online. Invia questo link al cliente:</p>
+      <div style="display:flex;gap:8px">
+        <input type="text" id="link-pubblicato" readonly style="flex:1;background:var(--fill);border:1px solid var(--bordo-forte);border-radius:var(--r);padding:8px 11px;font-family:var(--font-mono);font-size:12.5px">
+        <button class="btn btn-secondario" id="btn-copia-link">Copia</button>
+      </div>
+      <p style="font-size:12.5px;color:var(--muted)">GitHub Pages può impiegare 1–2 minuti a mostrare la pagina appena pubblicata.</p>
+    </div>
+    <div class="modale-piede">
+      <a class="btn btn-blu" id="btn-apri-link" href="#" target="_blank" rel="noopener" style="text-decoration:none">Apri la pagina</a>
+    </div>
+  </div>
+</div>
+
+<div id="toast-zona" aria-live="polite"></div>
+
+<script>
+'use strict';
+/* ================================================================
+   Costanti e utilità
+================================================================ */
+const CATEGORIE = [
+  'Cassetta incasso / scarico',
+  'Ceramica WC + bidet',
+  'Rubinetteria incasso doccia + lavabo + bidet',
+  'Set doccia + braccio doccia',
+  'Accessori'
+];
+const UNITA = ['pz','m²','m','h','corpo'];
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+
+function esc(s){
+  return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function escBr(s){ return esc(s).replace(/\r?\n/g,'<br>'); }
+/* Formato brand: € 1.234,56 — simbolo prima, spazio, virgola decimale */
+function euro(n){
+  const neg = n < 0;
+  const [i,d] = Math.abs(Math.round((n||0)*100)/100).toFixed(2).split('.');
+  return (neg?'−':'') + '€ ' + i.replace(/\B(?=(\d{3})+(?!\d))/g,'.') + ',' + d;
+}
+function pct(n){ return '−' + String(n).replace('.',',') + '%'; }
+function dataIT(iso, lunga){
+  if(!iso) return '';
+  const d = new Date(iso + (iso.length===10 ? 'T12:00:00' : ''));
+  return d.toLocaleDateString('it-IT', lunga ? {day:'numeric',month:'long',year:'numeric'} : {day:'2-digit',month:'2-digit',year:'numeric'});
+}
+function oggiISO(){ return new Date().toISOString().slice(0,10); }
+function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,8); }
+function suffissoCasuale(){
+  const alfa = 'abcdefghjkmnpqrstuvwxyz23456789';
+  let s = '';
+  const buf = new Uint32Array(7);
+  crypto.getRandomValues(buf);
+  for(const v of buf) s += alfa[v % alfa.length];
+  return s;
+}
+function debounce(fn, ms){
+  let t; return (...a)=>{ clearTimeout(t); t = setTimeout(()=>fn(...a), ms); };
+}
+function toast(msg, tipo){
+  const el = document.createElement('div');
+  el.className = 'toast ' + (tipo||'ok');
+  const icona = tipo==='errore'
+    ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>'
+    : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>';
+  el.innerHTML = icona + '<span>' + esc(msg) + '</span>';
+  $('#toast-zona').appendChild(el);
+  setTimeout(()=>{ el.style.opacity='0'; el.style.transition='opacity 280ms'; setTimeout(()=>el.remove(), 300); }, 3600);
+}
+function compressaImmagine(file, latoMax){
+  return new Promise((ris, rif)=>{
+    const lettore = new FileReader();
+    lettore.onerror = rif;
+    lettore.onload = ()=>{
+      const img = new Image();
+      img.onerror = rif;
+      img.onload = ()=>{
+        let {width:w, height:h} = img;
+        if(Math.max(w,h) > latoMax){
+          const k = latoMax / Math.max(w,h);
+          w = Math.round(w*k); h = Math.round(h*k);
+        }
+        const c = document.createElement('canvas');
+        c.width = w; c.height = h;
+        const ctx = c.getContext('2d');
+        ctx.fillStyle = '#fff'; ctx.fillRect(0,0,w,h);
+        ctx.drawImage(img, 0, 0, w, h);
+        ris(c.toDataURL('image/jpeg', 0.82));
+      };
+      img.src = lettore.result;
+    };
+    lettore.readAsDataURL(file);
+  });
+}
+
+/* ================================================================
+   Segnaposto SVG (dati demo)
+================================================================ */
+function svgDataUri(svg){ return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg); }
+function svgProdotto(cat){
+  const disegni = {
+    0:'<rect x="140" y="60" width="120" height="180" rx="6"/><rect x="165" y="90" width="70" height="44" rx="4"/><rect x="172" y="98" width="24" height="28" rx="3"/><rect x="204" y="98" width="18" height="28" rx="3"/><line x1="140" y1="160" x2="260" y2="160"/>',
+    1:'<path d="M150 90 h100 v30 a50 44 0 0 1 -100 0 z"/><ellipse cx="200" cy="90" rx="58" ry="14"/><rect x="176" y="180" width="48" height="14" rx="4"/>',
+    2:'<circle cx="200" cy="130" r="46"/><circle cx="200" cy="130" r="30"/><line x1="200" y1="84" x2="200" y2="60"/><path d="M168 190 h64"/><line x1="200" y1="176" x2="200" y2="190"/>',
+    3:'<line x1="130" y1="70" x2="230" y2="70"/><path d="M230 70 v22"/><ellipse cx="230" cy="104" rx="34" ry="12"/><line x1="212" y1="126" x2="212" y2="138"/><line x1="230" y1="128" x2="230" y2="142"/><line x1="248" y1="126" x2="248" y2="138"/><line x1="130" y1="70" x2="130" y2="200"/>',
+    4:'<line x1="140" y1="100" x2="260" y2="100"/><circle cx="140" cy="100" r="8"/><circle cx="260" cy="100" r="8"/><path d="M165 100 v70 a10 10 0 0 0 10 10 h50 a10 10 0 0 0 10 -10 v-70"/>'
+  };
+  const svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"><rect width="400" height="300" fill="#F0F2F1"/><g fill="none" stroke="#9AA09F" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">' + (disegni[cat]||disegni[4]) + '</g><rect x="0" y="0" width="400" height="6" fill="#CA003A"/></svg>';
+  return svgDataUri(svg);
+}
+function logoSchlaefer(){
+  const svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 500">'
+    + '<rect width="1000" height="500" fill="#FFFFFF"/>'
+    + '<rect width="1000" height="320" fill="#CA003A"/>'
+    + '<text x="500" y="245" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-weight="bold" font-size="190" fill="#FFFFFF" letter-spacing="-4">schläfer</text>'
+    + '<text x="500" y="445" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-weight="bold" font-size="78" fill="#0076BB">Der HeimwerkerProfi</text>'
+    + '</svg>';
+  return svgDataUri(svg);
+}
+function svgAmbientata(){
+  const svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900">'
+    + '<rect width="1600" height="900" fill="#E8EBEA"/>'
+    + '<g stroke="#D5D9D8" stroke-width="3">'
+    + Array.from({length:7},(_,i)=>'<line x1="'+(200+i*200)+'" y1="0" x2="'+(200+i*200)+'" y2="620"/>').join('')
+    + Array.from({length:3},(_,i)=>'<line x1="0" y1="'+(160+i*160)+'" x2="1600" y2="'+(160+i*160)+'"/>').join('')
+    + '</g>'
+    + '<rect x="0" y="620" width="1600" height="280" fill="#DDE0DF"/>'
+    + '<g fill="none" stroke="#6F7675" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">'
+    + '<line x1="1050" y1="120" x2="1050" y2="330"/><path d="M1050 120 h130 v30"/><ellipse cx="1180" cy="170" rx="52" ry="16"/>'
+    + '<path d="M380 620 v-110 a24 24 0 0 1 24 -24 h150 a24 24 0 0 1 24 24 v110"/><ellipse cx="479" cy="470" rx="110" ry="22"/>'
+    + '<rect x="700" y="430" width="180" height="190" rx="10"/><rect x="745" y="470" width="90" height="52" rx="6"/>'
+    + '</g>'
+    + '<rect x="0" y="0" width="1600" height="10" fill="#CA003A"/>'
+    + '<text x="800" y="860" text-anchor="middle" font-family="Arial" font-size="30" fill="#9AA09F">Immagine di esempio — sostituisci con le foto del progetto</text>'
+    + '</svg>';
+  return svgDataUri(svg);
+}
+
+/* ================================================================
+   Stato e persistenza locale
+================================================================ */
+const LS = { imp:'ap_impostazioni', cat:'ap_catalogo', prev:'ap_preventivi', gh:'ap_github' };
+let IMP = null;              // impostazioni condivise
+let CAT = { prodotti:[], lapidi:[] };
+let PREV = { preventivi:[], lapidi:[] };
+let GH = { token:'', utente:'', repoDati:'', repoPagine:'', branch:'main', attivo:false };
+
+function leggiLS(chiave, fallback){
+  try{ const v = localStorage.getItem(chiave); return v ? JSON.parse(v) : fallback; }
+  catch(e){ return fallback; }
+}
+function salvaLS(){
+  localStorage.setItem(LS.imp, JSON.stringify(IMP));
+  localStorage.setItem(LS.cat, JSON.stringify(CAT));
+  localStorage.setItem(LS.prev, JSON.stringify(PREV));
+  localStorage.setItem(LS.gh, JSON.stringify(GH));
+}
+
+function impostazioniDemo(){
+  return {
+    azienda:{
+      nome:'Isme Service S.r.l.',
+      payoff:'schläfer — Der HeimwerkerProfi',
+      logo:logoSchlaefer(),
+      telefono:'+39 0365 189 6807',
+      whatsapp:'+39 370 126 0499',
+      email:'info@ismeservice.com',
+      indirizzo:'Via Roma 39, 25070 Casto (BS)',
+      piva:'04405390982 · REA BS-612222',
+      sito:'www.ismeshop.it'
+    },
+    default:{
+      iva:10,
+      validita:30,
+      intro:'Grazie per averci scelto per il tuo nuovo bagno. Qui sotto trovi la nostra proposta completa: prodotti selezionati, fatti per durare, con prezzi chiari e senza sorprese. Per qualsiasi dubbio siamo a tua disposizione.',
+      condizioni:'Prezzi IVA esclusa salvo diversa indicazione in tabella. Offerta valida fino alla data indicata. Pagamento: 50% alla conferma, saldo alla consegna. Spedizione 24/48h per i prodotti a magazzino; per gli articoli su ordinazione i tempi vengono comunicati alla conferma. Eventuali opere murarie e allacciamenti sono esclusi se non espressamente indicati.'
+    },
+    venditori:['Fabio','Alessandro','Giulia'],
+    aggiornatoIl: Date.now()
+  };
+}
+function catalogoDemo(){
+  const t = Date.now();
+  const p = (nome, cat, descr, prezzo, unita) => ({ id:uid()+Math.random().toString(36).slice(2,5), nome, categoria:CATEGORIE[cat], descrizione:descr, prezzo, unita, foto:svgProdotto(cat), aggiornatoIl:t });
+  return { prodotti:[
+    p('Cassetta a incasso Duo 3/6 L', 0, 'Cassetta di risciacquo a incasso con doppio scarico 3/6 litri, telaio autoportante e isolamento anticondensa.', 189.00, 'pz'),
+    p('Placca di comando Piana bianca', 0, 'Placca a due tasti in ABS bianco opaco, compatibile con cassetta Duo. Fissaggio a scatto senza viti.', 34.90, 'pz'),
+    p('Kit di scarico universale WC', 0, 'Curva tecnica e manicotto di scarico regolabile Ø 90/110 mm, guarnizioni incluse.', 27.50, 'pz'),
+    p('Vaso sospeso Rimless Level', 1, 'Vaso sospeso senza brida in ceramica bianca lucida, scarico a parete, sedile soft-close incluso.', 289.00, 'pz'),
+    p('Bidet sospeso Level', 1, 'Bidet sospeso monoforo coordinato alla serie Level, con fissaggi nascosti.', 249.00, 'pz'),
+    p('Miscelatore doccia a incasso Steel', 2, 'Miscelatore monocomando a incasso con corpo in ottone e piastra in acciaio inox spazzolato.', 159.00, 'pz'),
+    p('Miscelatore lavabo Steel', 2, 'Miscelatore monocomando per lavabo con cartuccia Ø 35 mm e aeratore anticalcare, scarico incluso.', 119.00, 'pz'),
+    p('Miscelatore bidet Steel', 2, 'Miscelatore monocomando per bidet coordinato alla serie Steel, snodo sfera per il getto.', 109.00, 'pz'),
+    p('Soffione tondo Rain Ø 250 mm', 3, 'Soffione doccia in acciaio inox Ø 250 mm, spessore 2 mm, getto a pioggia con ugelli anticalcare.', 139.00, 'pz'),
+    p('Braccio doccia a parete 40 cm', 3, 'Braccio doccia tondo in ottone cromato, attacco 1/2", lunghezza 40 cm.', 45.00, 'pz'),
+    p('Set doccetta con supporto e flessibile', 3, 'Doccetta monogetto anticalcare, supporto fisso e flessibile in acciaio 150 cm.', 59.00, 'pz'),
+    p('Porta salviette 60 cm inox', 4, 'Barra porta salviette in acciaio inox satinato, fissaggio nascosto, fatta per durare.', 49.00, 'pz'),
+    p('Porta rotolo con mensolina', 4, 'Porta rotolo in acciaio inox con mensolina appoggia-smartphone.', 39.00, 'pz'),
+    p('Kit fissaggio sanitari sospesi', 4, 'Coppia di staffe rinforzate con tasselli chimici per vasi e bidet sospesi.', 24.90, 'pz'),
+    p('Manodopera installazione', 4, 'Posa in opera da parte di installatore qualificato, attrezzatura e materiali di consumo inclusi.', 40.00, 'h')
+  ], lapidi:[] };
+}
+function preventiviDemo(catalogo){
+  const t = Date.now();
+  const anno = new Date().getFullYear();
+  const daCat = (nome, qta, sconto) => {
+    const pr = catalogo.prodotti.find(x=>x.nome===nome);
+    return { id:uid()+Math.random().toString(36).slice(2,5), prodottoId:pr.id, descrizione:pr.nome, categoria:pr.categoria, qta, unita:pr.unita, prezzo:pr.prezzo, sconto:sconto||0 };
+  };
+  const base = {
+    clienteTelefono:'', clienteEmail:'', clienteIndirizzo:'',
+    intro:'', nota:'', foto:[], scontoFinale:0, pubblicatoUrl:'', slug:''
+  };
+  return { preventivi:[
+    {
+      ...base,
+      id:uid()+'a1', numero:'Q-'+anno+'-001',
+      clienteNome:'Marco Bettinzoli', clienteTelefono:'333 0000001', clienteEmail:'marco.bettinzoli@esempio.it', clienteIndirizzo:'Via Roma 12, Casto (BS)',
+      venditore:'Fabio', data:oggiISO(), validita:30, iva:10, scontoFinale:5,
+      titolo:'', intro:'', nota:'Nel prezzo è inclusa la consegna al piano e il ritiro degli imballi. Se confermi entro fine mese blocchiamo i prezzi di listino attuali.',
+      foto:[svgAmbientata()],
+      voci:[
+        daCat('Cassetta a incasso Duo 3/6 L',1,0), daCat('Placca di comando Piana bianca',1,0),
+        daCat('Vaso sospeso Rimless Level',1,10), daCat('Bidet sospeso Level',1,10),
+        daCat('Miscelatore doccia a incasso Steel',1,0), daCat('Miscelatore lavabo Steel',1,0), daCat('Miscelatore bidet Steel',1,0),
+        daCat('Soffione tondo Rain Ø 250 mm',1,0), daCat('Braccio doccia a parete 40 cm',1,0), daCat('Set doccetta con supporto e flessibile',1,0),
+        daCat('Porta salviette 60 cm inox',1,0), daCat('Porta rotolo con mensolina',1,0),
+        daCat('Manodopera installazione',8,0)
+      ],
+      stato:'inviato', aggiornatoIl:t-86400000
+    },
+    {
+      ...base,
+      id:uid()+'b2', numero:'Q-'+anno+'-002',
+      clienteNome:'Elena Franzoni', clienteTelefono:'333 0000002', clienteEmail:'', clienteIndirizzo:'Via Garibaldi 4, Vestone (BS)',
+      venditore:'Giulia', data:oggiISO(), validita:20, iva:22, scontoFinale:0,
+      titolo:'Rinnovo doccia di Elena', intro:'', nota:'',
+      foto:[],
+      voci:[
+        daCat('Miscelatore doccia a incasso Steel',1,0),
+        daCat('Soffione tondo Rain Ø 250 mm',1,0), daCat('Braccio doccia a parete 40 cm',1,0),
+        daCat('Set doccetta con supporto e flessibile',1,5),
+        daCat('Manodopera installazione',3,0)
+      ],
+      stato:'bozza', aggiornatoIl:t-3600000
+    }
+  ], lapidi:[] };
+}
+
+function caricaStato(){
+  GH = Object.assign(GH, leggiLS(LS.gh, {}));
+  IMP = leggiLS(LS.imp, null);
+  CAT = leggiLS(LS.cat, null);
+  PREV = leggiLS(LS.prev, null);
+  if(!IMP || !CAT || !PREV){
+    IMP = IMP || impostazioniDemo();
+    CAT = CAT || catalogoDemo();
+    PREV = PREV || preventiviDemo(CAT);
+    salvaLS();
+  }
+  /* aggiorna le installazioni che hanno ancora i vecchi contatti segnaposto */
+  if(IMP.azienda && (IMP.azienda.telefono==='+39 0365 000000' || IMP.azienda.email==='info@ismeservice.example')){
+    IMP.azienda = impostazioniDemo().azienda;
+    IMP.aggiornatoIl = Date.now();
+    salvaLS();
+  }
+  if(IMP.azienda && IMP.azienda.sito===undefined) IMP.azienda.sito = '';
+}
+
+/* ================================================================
+   GitHub API — sync dati condivisi + pubblicazione pagine
+================================================================ */
+function b64codifica(str){
+  const bytes = new TextEncoder().encode(str);
+  let bin = '';
+  const blocco = 0x8000;
+  for(let i=0;i<bytes.length;i+=blocco) bin += String.fromCharCode(...bytes.subarray(i,i+blocco));
+  return btoa(bin);
+}
+function b64decodifica(b64){
+  const bin = atob(b64.replace(/\n/g,''));
+  const bytes = Uint8Array.from(bin, c=>c.charCodeAt(0));
+  return new TextDecoder().decode(bytes);
+}
+function ghPronto(){ return !!(GH.attivo && GH.token && GH.utente && GH.repoDati); }
+function ghHeaders(){
+  return { 'Authorization':'Bearer '+GH.token, 'Accept':'application/vnd.github+json', 'X-GitHub-Api-Version':'2022-11-28' };
+}
+async function ghLeggi(repo, percorso){
+  const r = await fetch('https://api.github.com/repos/'+GH.utente+'/'+repo+'/contents/'+percorso+'?ref='+encodeURIComponent(GH.branch||'main'), { headers: ghHeaders() });
+  if(r.status === 404) return null;
+  if(!r.ok) throw new Error('GitHub: lettura di '+percorso+' fallita ('+r.status+')');
+  const j = await r.json();
+  return { testo: b64decodifica(j.content), sha: j.sha };
+}
+async function ghScrivi(repo, percorso, testo, sha, messaggio){
+  const corpo = { message: messaggio, content: b64codifica(testo), branch: GH.branch||'main' };
+  if(sha) corpo.sha = sha;
+  const r = await fetch('https://api.github.com/repos/'+GH.utente+'/'+repo+'/contents/'+percorso, {
+    method:'PUT', headers: Object.assign({'Content-Type':'application/json'}, ghHeaders()), body: JSON.stringify(corpo)
+  });
+  if(!r.ok){
+    const e = new Error('GitHub: scrittura di '+percorso+' fallita ('+r.status+')');
+    e.status = r.status;
+    throw e;
+  }
+  return r.json();
+}
+
+/* Fusione: vince il piu recente su aggiornatoIl; le lapidi impediscono la resurrezione */
+function fondiElementi(locali, remoti, lapidi){
+  const morti = new Map(lapidi.map(l=>[l.id, l.il]));
+  const mappa = new Map();
+  for(const e of [...remoti, ...locali]){
+    const m = morti.get(e.id);
+    if(m && m >= (e.aggiornatoIl||0)) continue;
+    const gia = mappa.get(e.id);
+    if(!gia || (e.aggiornatoIl||0) > (gia.aggiornatoIl||0)) mappa.set(e.id, e);
+  }
+  return [...mappa.values()];
+}
+function fondiLapidi(a, b){
+  const mappa = new Map();
+  for(const l of [...(a||[]), ...(b||[])]){
+    const gia = mappa.get(l.id);
+    if(!gia || l.il > gia.il) mappa.set(l.id, l);
+  }
+  return [...mappa.values()];
+}
+
+function aggiornaSyncUI(stato, testo){
+  const p = $('#sync-pallino'), t = $('#sync-testo');
+  p.className = 'sync-pallino' + (stato==='ok' ? ' ok' : stato==='errore' ? ' errore' : '');
+  t.textContent = testo;
+}
+
+async function sincronizza(spingi){
+  if(!ghPronto()){ aggiornaSyncUI('demo','Modalità demo (locale)'); return; }
+  aggiornaSyncUI('','Sincronizzazione…');
+  try{
+    /* --- impostazioni --- */
+    const rImp = await ghLeggi(GH.repoDati, 'data/impostazioni.json');
+    let impRemoto = rImp ? JSON.parse(rImp.testo) : null;
+    if(impRemoto && (impRemoto.aggiornatoIl||0) > (IMP.aggiornatoIl||0)) IMP = impRemoto;
+    if(spingi || !impRemoto || (IMP.aggiornatoIl||0) > (impRemoto.aggiornatoIl||0)){
+      if(!impRemoto || JSON.stringify(impRemoto) !== JSON.stringify(IMP))
+        await ghScrivi(GH.repoDati, 'data/impostazioni.json', JSON.stringify(IMP, null, 2), rImp && rImp.sha, 'Aggiorna impostazioni');
+    }
+    /* --- catalogo --- */
+    const rCat = await ghLeggi(GH.repoDati, 'data/catalogo.json');
+    const catRemoto = rCat ? JSON.parse(rCat.testo) : { prodotti:[], lapidi:[] };
+    const lapidiCat = fondiLapidi(CAT.lapidi, catRemoto.lapidi);
+    const prodotti = fondiElementi(CAT.prodotti, catRemoto.prodotti||[], lapidiCat);
+    CAT = { prodotti, lapidi: lapidiCat };
+    const catJson = JSON.stringify(CAT, null, 2);
+    if(!rCat || rCat.testo !== catJson)
+      await ghScrivi(GH.repoDati, 'data/catalogo.json', catJson, rCat && rCat.sha, 'Aggiorna catalogo');
+    /* --- preventivi --- */
+    const rPrev = await ghLeggi(GH.repoDati, 'data/preventivi.json');
+    const prevRemoto = rPrev ? JSON.parse(rPrev.testo) : { preventivi:[], lapidi:[] };
+    const lapidiPrev = fondiLapidi(PREV.lapidi, prevRemoto.lapidi);
+    const preventivi = fondiElementi(PREV.preventivi, prevRemoto.preventivi||[], lapidiPrev);
+    PREV = { preventivi, lapidi: lapidiPrev };
+    const prevJson = JSON.stringify(PREV, null, 2);
+    if(!rPrev || rPrev.testo !== prevJson)
+      await ghScrivi(GH.repoDati, 'data/preventivi.json', prevJson, rPrev && rPrev.sha, 'Aggiorna preventivi');
+
+    salvaLS();
+    aggiornaSyncUI('ok','Sincronizzato con GitHub');
+    return true;
+  }catch(e){
+    console.error(e);
+    aggiornaSyncUI('errore','Errore di sincronizzazione');
+    toast('Sincronizzazione GitHub non riuscita: '+e.message, 'errore');
+    return false;
+  }
+}
+let syncInCorso = null;
+async function salvaEsincronizza(){
+  salvaLS();
+  if(!ghPronto()) return;
+  if(syncInCorso) await syncInCorso.catch(()=>{});
+  syncInCorso = sincronizza(true);
+  await syncInCorso;
+  syncInCorso = null;
+}
+</script>
+<script>
+/* ================================================================
+   Navigazione
+================================================================ */
+function mostraVista(nome){
+  $$('.vista').forEach(v=>v.classList.remove('attiva'));
+  $('#vista-'+nome).classList.add('attiva');
+  $$('.nav-voce').forEach(b=>b.classList.toggle('attiva', b.dataset.vista===nome));
+  document.body.classList.remove('menu-aperto');
+  $('#sidebar').classList.remove('aperta');
+  if(nome==='archivio') disegnaArchivio();
+  if(nome==='catalogo') disegnaCatalogo();
+  if(nome==='impostazioni') riempiImpostazioni();
+}
+$$('.nav-voce').forEach(b=>b.addEventListener('click', ()=>{
+  if(b.dataset.vista==='editor'){ apriEditor(null); return; }
+  mostraVista(b.dataset.vista);
+}));
+$('#apri-menu').addEventListener('click', ()=>{
+  $('#sidebar').classList.add('aperta');
+  document.body.classList.add('menu-aperto');
+});
+$('#velo-menu').addEventListener('click', ()=>{
+  $('#sidebar').classList.remove('aperta');
+  document.body.classList.remove('menu-aperto');
+});
+
+/* Modali: chiusura generica */
+$$('[data-chiudi]').forEach(b=>b.addEventListener('click', ()=>chiudiModale(b.dataset.chiudi)));
+$$('.modale-fondo').forEach(m=>m.addEventListener('click', e=>{ if(e.target===m) chiudiModale(m.id); }));
+document.addEventListener('keydown', e=>{
+  if(e.key==='Escape') $$('.modale-fondo.aperta').forEach(m=>chiudiModale(m.id));
+});
+function apriModale(id){ $('#'+id).classList.add('aperta'); }
+function chiudiModale(id){ $('#'+id).classList.remove('aperta'); }
+
+/* Conferma eliminazione */
+let confermaAzione = null;
+function chiediConferma(testo, azione){
+  $('#conferma-testo').textContent = testo;
+  confermaAzione = azione;
+  apriModale('modale-conferma');
+}
+$('#btn-conferma-ok').addEventListener('click', ()=>{
+  chiudiModale('modale-conferma');
+  if(confermaAzione) confermaAzione();
+  confermaAzione = null;
+});
+
+/* ================================================================
+   Calcoli preventivo
+================================================================ */
+function importoVoce(v){
+  return (Number(v.qta)||0) * (Number(v.prezzo)||0) * (1 - (Number(v.sconto)||0)/100);
+}
+function totaliPreventivo(p){
+  const totaleVoci = p.voci.reduce((s,v)=>s+importoVoce(v), 0);
+  const sconto = totaleVoci * (Number(p.scontoFinale)||0)/100;
+  const imponibile = totaleVoci - sconto;
+  const iva = imponibile * (Number(p.iva)||0)/100;
+  return { totaleVoci, sconto, imponibile, iva, totale: imponibile+iva };
+}
+function prossimoNumero(){
+  const anno = new Date().getFullYear();
+  let max = 0;
+  for(const p of PREV.preventivi){
+    const m = /^Q-(\d{4})-(\d+)$/.exec(p.numero||'');
+    if(m && Number(m[1])===anno) max = Math.max(max, Number(m[2]));
+  }
+  return 'Q-'+anno+'-'+String(max+1).padStart(3,'0');
+}
+function scadenzaISO(p){
+  const d = new Date((p.data||oggiISO()) + 'T12:00:00');
+  d.setDate(d.getDate() + (Number(p.validita)||0));
+  return d.toISOString().slice(0,10);
+}
+
+/* ================================================================
+   Archivio
+================================================================ */
+let filtroStato = '';
+let filtroTesto = '';
+const NOMI_STATO = { bozza:'Bozza', inviato:'Inviato', accettato:'Accettato', rifiutato:'Rifiutato' };
+
+function disegnaArchivio(){
+  const corpo = $('#corpo-archivio');
+  const q = filtroTesto.trim().toLowerCase();
+  const lista = PREV.preventivi
+    .filter(p=>!filtroStato || p.stato===filtroStato)
+    .filter(p=>!q || (p.clienteNome||'').toLowerCase().includes(q) || (p.numero||'').toLowerCase().includes(q))
+    .sort((a,b)=>(b.numero||'').localeCompare(a.numero||''));
+  $('#archivio-vuoto').style.display = lista.length ? 'none' : '';
+  $('#tabella-archivio').style.display = lista.length ? '' : 'none';
+  corpo.innerHTML = lista.map(p=>{
+    const t = totaliPreventivo(p);
+    return '<tr data-id="'+p.id+'">'
+      + '<td class="cella-numero">'+esc(p.numero)+'</td>'
+      + '<td><div class="cella-cliente">'+esc(p.clienteNome||'—')+'</div>'
+      + (p.clienteIndirizzo ? '<div class="cella-sub">'+esc(p.clienteIndirizzo)+'</div>' : '') + '</td>'
+      + '<td>'+dataIT(p.data)+'</td>'
+      + '<td>'+esc(p.venditore||'—')+'</td>'
+      + '<td class="num">'+euro(t.totale)+'</td>'
+      + '<td><span class="badge badge-'+p.stato+'">'+NOMI_STATO[p.stato]+'</span></td>'
+      + '<td><div class="cella-azioni">'
+      + (p.pubblicatoUrl ? '<a class="btn-icona" href="'+esc(p.pubblicatoUrl)+'" target="_blank" rel="noopener" title="Apri pagina pubblicata" onclick="event.stopPropagation()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></a>' : '')
+      + '<button class="btn-icona" data-azione="duplica" title="Duplica"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>'
+      + '<button class="btn-icona" data-azione="elimina" title="Elimina"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>'
+      + '</div></td></tr>';
+  }).join('');
+}
+$('#corpo-archivio').addEventListener('click', e=>{
+  const riga = e.target.closest('tr[data-id]');
+  if(!riga) return;
+  const p = PREV.preventivi.find(x=>x.id===riga.dataset.id);
+  if(!p) return;
+  const bottone = e.target.closest('[data-azione]');
+  if(!bottone){ apriEditor(p.id); return; }
+  if(bottone.dataset.azione==='duplica'){
+    const copia = JSON.parse(JSON.stringify(p));
+    copia.id = uid();
+    copia.numero = prossimoNumero();
+    copia.stato = 'bozza';
+    copia.data = oggiISO();
+    copia.pubblicatoUrl = ''; copia.slug = '';
+    copia.voci.forEach(v=>v.id = uid());
+    copia.aggiornatoIl = Date.now();
+    PREV.preventivi.push(copia);
+    disegnaArchivio();
+    salvaEsincronizza();
+    toast('Preventivo duplicato come '+copia.numero);
+  }
+  if(bottone.dataset.azione==='elimina'){
+    chiediConferma('Eliminare il preventivo '+p.numero+' di '+(p.clienteNome||'cliente senza nome')+'? L\'operazione vale per tutti i venditori.', ()=>{
+      PREV.preventivi = PREV.preventivi.filter(x=>x.id!==p.id);
+      PREV.lapidi.push({ id:p.id, il:Date.now() });
+      disegnaArchivio();
+      salvaEsincronizza();
+      toast('Preventivo '+p.numero+' eliminato');
+    });
+  }
+});
+$('#cerca-preventivi').addEventListener('input', e=>{ filtroTesto = e.target.value; disegnaArchivio(); });
+$$('#vista-archivio .chip').forEach(c=>c.addEventListener('click', ()=>{
+  $$('#vista-archivio .chip').forEach(x=>x.classList.remove('attivo'));
+  c.classList.add('attivo');
+  filtroStato = c.dataset.stato;
+  disegnaArchivio();
+}));
+$('#btn-nuovo-preventivo').addEventListener('click', ()=>apriEditor(null));
+
+/* ================================================================
+   Catalogo
+================================================================ */
+let filtroCategoria = '';
+function disegnaFiltriCatalogo(){
+  const cont = $('#filtri-catalogo');
+  cont.innerHTML = '<button class="chip'+(filtroCategoria===''?' attivo':'')+'" data-cat="">Tutte</button>'
+    + CATEGORIE.map(c=>'<button class="chip'+(filtroCategoria===c?' attivo':'')+'" data-cat="'+esc(c)+'">'+esc(c)+'</button>').join('');
+  cont.querySelectorAll('.chip').forEach(ch=>ch.addEventListener('click', ()=>{
+    filtroCategoria = ch.dataset.cat;
+    disegnaCatalogo();
+  }));
+}
+function disegnaCatalogo(){
+  disegnaFiltriCatalogo();
+  const griglia = $('#griglia-catalogo');
+  const lista = CAT.prodotti
+    .filter(p=>!filtroCategoria || p.categoria===filtroCategoria)
+    .sort((a,b)=>CATEGORIE.indexOf(a.categoria)-CATEGORIE.indexOf(b.categoria) || a.nome.localeCompare(b.nome));
+  $('#catalogo-vuoto').style.display = lista.length ? 'none' : '';
+  griglia.innerHTML = lista.map(p=>
+    '<article class="prodotto-card" data-id="'+p.id+'">'
+    + '<div class="prodotto-foto"><img src="'+esc(p.foto||svgProdotto(CATEGORIE.indexOf(p.categoria)))+'" alt="'+esc(p.nome)+'" loading="lazy"></div>'
+    + '<div class="prodotto-info">'
+    + '<span class="prodotto-cat">'+esc(p.categoria)+'</span>'
+    + '<div class="prodotto-nome">'+esc(p.nome)+'</div>'
+    + '<div class="prodotto-descr">'+esc(p.descrizione||'')+'</div>'
+    + '<div class="prodotto-piede"><span class="prodotto-prezzo">'+euro(p.prezzo)+'</span><span class="prodotto-unita">/ '+esc(p.unita)+'</span></div>'
+    + '</div>'
+    + '<div class="prodotto-azioni">'
+    + '<button data-azione="modifica">Modifica</button>'
+    + '<button data-azione="elimina" class="rossa">Elimina</button>'
+    + '</div></article>'
+  ).join('');
+}
+$('#griglia-catalogo').addEventListener('click', e=>{
+  const card = e.target.closest('.prodotto-card');
+  const bottone = e.target.closest('[data-azione]');
+  if(!card || !bottone) return;
+  const p = CAT.prodotti.find(x=>x.id===card.dataset.id);
+  if(!p) return;
+  if(bottone.dataset.azione==='modifica') apriModaleProdotto(p);
+  if(bottone.dataset.azione==='elimina'){
+    chiediConferma('Eliminare "'+p.nome+'" dal catalogo condiviso?', ()=>{
+      CAT.prodotti = CAT.prodotti.filter(x=>x.id!==p.id);
+      CAT.lapidi.push({ id:p.id, il:Date.now() });
+      disegnaCatalogo();
+      salvaEsincronizza();
+      toast('Prodotto eliminato dal catalogo');
+    });
+  }
+});
+
+/* Modale prodotto */
+let prodottoInModifica = null;
+let fotoProdottoTemp = '';
+function apriModaleProdotto(p){
+  prodottoInModifica = p || null;
+  fotoProdottoTemp = p ? (p.foto||'') : '';
+  $('#modale-prodotto-titolo').textContent = p ? 'Modifica prodotto' : 'Nuovo prodotto';
+  $('#p-nome').value = p ? p.nome : '';
+  const sel = $('#p-categoria');
+  sel.innerHTML = CATEGORIE.map(c=>'<option>'+esc(c)+'</option>').join('');
+  sel.value = p ? p.categoria : (filtroCategoria || CATEGORIE[0]);
+  $('#p-descrizione').value = p ? (p.descrizione||'') : '';
+  $('#p-prezzo').value = p ? p.prezzo : '';
+  $('#p-unita').value = p ? p.unita : 'pz';
+  aggiornaFotoProdottoUI();
+  apriModale('modale-prodotto');
+  $('#p-nome').focus();
+}
+function aggiornaFotoProdottoUI(){
+  const img = $('#p-foto-anteprima');
+  img.src = fotoProdottoTemp || svgProdotto(CATEGORIE.indexOf($('#p-categoria').value));
+}
+$('#p-categoria').addEventListener('change', aggiornaFotoProdottoUI);
+$('#btn-nuovo-prodotto').addEventListener('click', ()=>apriModaleProdotto(null));
+$('#btn-carica-foto-prodotto').addEventListener('click', ()=>$('#input-foto-prodotto').click());
+$('#btn-rimuovi-foto-prodotto').addEventListener('click', ()=>{ fotoProdottoTemp=''; aggiornaFotoProdottoUI(); });
+$('#input-foto-prodotto').addEventListener('change', async e=>{
+  const file = e.target.files[0];
+  e.target.value = '';
+  if(!file) return;
+  try{
+    fotoProdottoTemp = await compressaImmagine(file, 1000);
+    aggiornaFotoProdottoUI();
+  }catch(err){ toast('Immagine non leggibile', 'errore'); }
+});
+$('#btn-salva-prodotto').addEventListener('click', ()=>{
+  const nome = $('#p-nome').value.trim();
+  const prezzo = Number($('#p-prezzo').value);
+  if(!nome){ toast('Inserisci il nome del prodotto', 'errore'); return; }
+  if(!(prezzo>=0)){ toast('Inserisci un prezzo valido', 'errore'); return; }
+  const dati = {
+    nome,
+    categoria: $('#p-categoria').value,
+    descrizione: $('#p-descrizione').value.trim(),
+    prezzo,
+    unita: $('#p-unita').value,
+    foto: fotoProdottoTemp || svgProdotto(CATEGORIE.indexOf($('#p-categoria').value)),
+    aggiornatoIl: Date.now()
+  };
+  if(prodottoInModifica) Object.assign(prodottoInModifica, dati);
+  else CAT.prodotti.push(Object.assign({ id:uid() }, dati));
+  chiudiModale('modale-prodotto');
+  disegnaCatalogo();
+  salvaEsincronizza();
+  toast(prodottoInModifica ? 'Prodotto aggiornato' : 'Prodotto aggiunto al catalogo');
+});
+</script>
+<script>
+/* ================================================================
+   Editor preventivo
+================================================================ */
+let Q = null; // preventivo in modifica (riferimento diretto o nuovo oggetto)
+let nuovoNonSalvato = false;
+
+function apriEditor(id){
+  if(id){
+    Q = PREV.preventivi.find(p=>p.id===id);
+    nuovoNonSalvato = false;
+  } else {
+    Q = {
+      id: uid(), numero: prossimoNumero(),
+      clienteNome:'', clienteTelefono:'', clienteEmail:'', clienteIndirizzo:'',
+      venditore: (IMP.venditori[0]||''), data: oggiISO(),
+      validita: IMP.default.validita, iva: IMP.default.iva, scontoFinale: 0,
+      titolo:'', intro:'', nota:'', foto:[], voci:[],
+      stato:'bozza', pubblicatoUrl:'', slug:'',
+      aggiornatoIl: Date.now()
+    };
+    nuovoNonSalvato = true;
+  }
+  riempiEditor();
+  mostraVista('editor');
+  aggiornaAnteprima();
+}
+function riempiEditor(){
+  $('#editor-titolo').textContent = Q.numero;
+  $('#e-stato').value = Q.stato;
+  aggiornaBadgeEditor();
+  $('#e-cliente-nome').value = Q.clienteNome;
+  $('#e-cliente-telefono').value = Q.clienteTelefono;
+  $('#e-cliente-email').value = Q.clienteEmail;
+  $('#e-cliente-indirizzo').value = Q.clienteIndirizzo;
+  const selV = $('#e-venditore');
+  const venditori = [...IMP.venditori];
+  if(Q.venditore && !venditori.includes(Q.venditore)) venditori.unshift(Q.venditore);
+  selV.innerHTML = venditori.map(v=>'<option>'+esc(v)+'</option>').join('');
+  selV.value = Q.venditore;
+  $('#e-data').value = Q.data;
+  $('#e-validita').value = Q.validita;
+  $('#e-iva').value = String(Q.iva);
+  $('#e-sconto').value = Q.scontoFinale || '';
+  $('#e-titolo').value = Q.titolo;
+  $('#e-titolo').placeholder = titoloPredefinito();
+  $('#e-intro').value = Q.intro;
+  $('#e-intro').placeholder = IMP.default.intro;
+  $('#e-nota').value = Q.nota;
+  disegnaFotoEditor();
+  disegnaVoci();
+  disegnaTotali();
+}
+function titoloPredefinito(){
+  const nome = (Q.clienteNome||'').trim().split(/\s+/)[0] || 'casa tua';
+  return 'Il nuovo bagno di ' + nome;
+}
+function aggiornaBadgeEditor(){
+  const b = $('#editor-badge');
+  b.className = 'badge badge-'+Q.stato;
+  b.textContent = NOMI_STATO[Q.stato];
+}
+
+/* Campi semplici -> Q */
+const campiEditor = [
+  ['e-cliente-nome','clienteNome'], ['e-cliente-telefono','clienteTelefono'],
+  ['e-cliente-email','clienteEmail'], ['e-cliente-indirizzo','clienteIndirizzo'],
+  ['e-venditore','venditore'], ['e-data','data'],
+  ['e-titolo','titolo'], ['e-intro','intro'], ['e-nota','nota']
+];
+for(const [idc, prop] of campiEditor){
+  $('#'+idc).addEventListener('input', e=>{
+    Q[prop] = e.target.value;
+    if(prop==='clienteNome') $('#e-titolo').placeholder = titoloPredefinito();
+    programmaAnteprima();
+  });
+}
+$('#e-validita').addEventListener('input', e=>{ Q.validita = Number(e.target.value)||0; programmaAnteprima(); });
+$('#e-iva').addEventListener('change', e=>{ Q.iva = Number(e.target.value); disegnaTotali(); programmaAnteprima(); });
+$('#e-sconto').addEventListener('input', e=>{ Q.scontoFinale = Number(e.target.value)||0; disegnaTotali(); programmaAnteprima(); });
+$('#e-stato').addEventListener('change', e=>{ Q.stato = e.target.value; aggiornaBadgeEditor(); });
+
+/* Foto ambientate */
+function disegnaFotoEditor(){
+  const cont = $('#foto-griglia');
+  cont.innerHTML = Q.foto.map((f,i)=>
+    '<div class="foto-slot"><img src="'+esc(f)+'" alt="Foto '+(i+1)+'">'
+    + (i===0 ? '<span class="tag-hero">Apertura</span>' : '')
+    + '<button class="rimuovi" data-i="'+i+'" title="Rimuovi foto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>'
+  ).join('')
+  + (Q.foto.length<3
+    ? '<button class="foto-aggiungi" id="btn-aggiungi-foto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>Aggiungi</button>'
+    : '');
+  const btn = $('#btn-aggiungi-foto');
+  if(btn) btn.addEventListener('click', ()=>$('#input-foto').click());
+  cont.querySelectorAll('.rimuovi').forEach(b=>b.addEventListener('click', ()=>{
+    Q.foto.splice(Number(b.dataset.i),1);
+    disegnaFotoEditor();
+    programmaAnteprima();
+  }));
+}
+$('#input-foto').addEventListener('change', async e=>{
+  const files = [...e.target.files].slice(0, 3-Q.foto.length);
+  e.target.value = '';
+  for(const f of files){
+    try{ Q.foto.push(await compressaImmagine(f, 1600)); }
+    catch(err){ toast('Immagine non leggibile', 'errore'); }
+  }
+  disegnaFotoEditor();
+  programmaAnteprima();
+});
+
+/* Voci */
+function disegnaVoci(){
+  const cont = $('#voci-lista');
+  if(!Q.voci.length){
+    cont.innerHTML = '<div style="padding:18px 0;color:var(--muted);font-size:13.5px">Nessuna voce. Aggiungi prodotti dal catalogo o una voce libera.</div>';
+    return;
+  }
+  cont.innerHTML = Q.voci.map((v,i)=>
+    '<div class="voce-riga" data-i="'+i+'">'
+    + '<input type="text" data-campo="descrizione" value="'+esc(v.descrizione)+'" placeholder="Descrizione" aria-label="Descrizione voce">'
+    + '<select data-campo="categoria" aria-label="Categoria">'+CATEGORIE.map(c=>'<option'+(c===v.categoria?' selected':'')+'>'+esc(c)+'</option>').join('')+'</select>'
+    + '<div style="display:flex;gap:4px;min-width:0"><input type="number" data-campo="qta" value="'+esc(v.qta)+'" min="0" step="0.5" style="flex:1" aria-label="Quantità"><select data-campo="unita" style="width:56px;flex:none" aria-label="Unità">'+UNITA.map(u=>'<option'+(u===v.unita?' selected':'')+'>'+u+'</option>').join('')+'</select></div>'
+    + '<input type="number" data-campo="prezzo" value="'+esc(v.prezzo)+'" min="0" step="0.01" aria-label="Prezzo unitario">'
+    + '<input type="number" data-campo="sconto" value="'+esc(v.sconto||'')+'" min="0" max="100" step="1" placeholder="0" aria-label="Sconto percentuale">'
+    + '<span class="voce-importo">'+euro(importoVoce(v))+'</span>'
+    + '<div class="voce-strumenti">'
+    + '<button class="btn-icona" data-azione="su" title="Sposta su"'+(i===0?' disabled style="opacity:.3"':'')+'><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg></button>'
+    + '<button class="btn-icona" data-azione="giu" title="Sposta giù"'+(i===Q.voci.length-1?' disabled style="opacity:.3"':'')+'><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>'
+    + '<button class="btn-icona" data-azione="via" title="Elimina voce"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>'
+    + '</div></div>'
+  ).join('');
+}
+$('#voci-lista').addEventListener('input', e=>{
+  const riga = e.target.closest('.voce-riga');
+  const campo = e.target.dataset.campo;
+  if(!riga || !campo) return;
+  const v = Q.voci[Number(riga.dataset.i)];
+  if(campo==='qta'||campo==='prezzo'||campo==='sconto') v[campo] = Number(e.target.value)||0;
+  else v[campo] = e.target.value;
+  riga.querySelector('.voce-importo').textContent = euro(importoVoce(v));
+  disegnaTotali();
+  programmaAnteprima();
+});
+$('#voci-lista').addEventListener('click', e=>{
+  const bottone = e.target.closest('[data-azione]');
+  const riga = e.target.closest('.voce-riga');
+  if(!bottone || !riga) return;
+  const i = Number(riga.dataset.i);
+  const az = bottone.dataset.azione;
+  if(az==='su' && i>0) [Q.voci[i-1], Q.voci[i]] = [Q.voci[i], Q.voci[i-1]];
+  if(az==='giu' && i<Q.voci.length-1) [Q.voci[i+1], Q.voci[i]] = [Q.voci[i], Q.voci[i+1]];
+  if(az==='via') Q.voci.splice(i,1);
+  disegnaVoci();
+  disegnaTotali();
+  programmaAnteprima();
+});
+$('#btn-voce-libera').addEventListener('click', ()=>{
+  Q.voci.push({ id:uid(), prodottoId:'', descrizione:'', categoria:CATEGORIE[4], qta:1, unita:'pz', prezzo:0, sconto:0 });
+  disegnaVoci();
+  disegnaTotali();
+  const prima = $('#voci-lista .voce-riga:last-child input');
+  if(prima) prima.focus();
+});
+
+/* Modale "dal catalogo" */
+function disegnaModaleCatalogo(filtro){
+  const q = (filtro||'').trim().toLowerCase();
+  const lista = CAT.prodotti
+    .filter(p=>!q || p.nome.toLowerCase().includes(q) || (p.descrizione||'').toLowerCase().includes(q) || p.categoria.toLowerCase().includes(q))
+    .sort((a,b)=>CATEGORIE.indexOf(a.categoria)-CATEGORIE.indexOf(b.categoria) || a.nome.localeCompare(b.nome));
+  $('#lista-modale-catalogo').innerHTML = lista.length ? lista.map(p=>
+    '<button class="scelta-voce" data-id="'+p.id+'">'
+    + '<img src="'+esc(p.foto)+'" alt="">'
+    + '<span class="sv-info"><span class="sv-nome">'+esc(p.nome)+'</span><span class="sv-cat">'+esc(p.categoria)+'</span></span>'
+    + '<span class="sv-prezzo">'+euro(p.prezzo)+' / '+esc(p.unita)+'</span>'
+    + '</button>'
+  ).join('') : '<div style="padding:20px;text-align:center;color:var(--muted);font-size:13.5px">Nessun prodotto trovato.</div>';
+}
+$('#btn-voce-catalogo').addEventListener('click', ()=>{
+  $('#cerca-modale-catalogo').value = '';
+  disegnaModaleCatalogo('');
+  apriModale('modale-catalogo');
+  $('#cerca-modale-catalogo').focus();
+});
+$('#cerca-modale-catalogo').addEventListener('input', e=>disegnaModaleCatalogo(e.target.value));
+$('#lista-modale-catalogo').addEventListener('click', e=>{
+  const voce = e.target.closest('.scelta-voce');
+  if(!voce) return;
+  const p = CAT.prodotti.find(x=>x.id===voce.dataset.id);
+  if(!p) return;
+  Q.voci.push({ id:uid(), prodottoId:p.id, descrizione:p.nome, categoria:p.categoria, qta:1, unita:p.unita, prezzo:p.prezzo, sconto:0 });
+  chiudiModale('modale-catalogo');
+  disegnaVoci();
+  disegnaTotali();
+  programmaAnteprima();
+});
+
+/* Totali */
+function disegnaTotali(){
+  const t = totaliPreventivo(Q);
+  let html = '<div class="totali-riga"><span class="etichetta">Totale voci</span><span class="valore">'+euro(t.totaleVoci)+'</span></div>';
+  if(t.sconto>0) html += '<div class="totali-riga"><span class="etichetta">Sconto finale '+pct(Q.scontoFinale)+'</span><span class="valore" style="color:var(--rosso)">−'+euro(t.sconto).replace('−','')+'</span></div>';
+  html += '<div class="totali-riga"><span class="etichetta">Imponibile</span><span class="valore">'+euro(t.imponibile)+'</span></div>'
+    + '<div class="totali-riga"><span class="etichetta">IVA '+Q.iva+'%</span><span class="valore">'+euro(t.iva)+'</span></div>'
+    + '<div class="totali-riga finale"><span class="etichetta">Totale</span><span class="valore">'+euro(t.totale)+'</span></div>';
+  $('#totali-blocco').innerHTML = html;
+}
+
+/* Anteprima live */
+function aggiornaAnteprima(){
+  if(!Q) return;
+  const html = paginaCliente(Q, IMP);
+  const attivo = $('#anteprima-mobile').classList.contains('aperta') ? $('#iframe-anteprima-mobile') : $('#iframe-anteprima');
+  attivo.srcdoc = html;
+}
+const programmaAnteprima = debounce(aggiornaAnteprima, 350);
+$('#btn-anteprima-mobile').addEventListener('click', ()=>{
+  $('#anteprima-mobile').classList.add('aperta');
+  aggiornaAnteprima();
+});
+$('#chiudi-anteprima-mobile').addEventListener('click', ()=>$('#anteprima-mobile').classList.remove('aperta'));
+$('#btn-torna-archivio').addEventListener('click', ()=>mostraVista('archivio'));
+
+/* Salvataggio */
+function salvaPreventivo(silenzioso){
+  if(!Q.titolo) Q.titolo = '';
+  Q.aggiornatoIl = Date.now();
+  if(nuovoNonSalvato){
+    PREV.preventivi.push(Q);
+    nuovoNonSalvato = false;
+  }
+  salvaEsincronizza();
+  if(!silenzioso) toast('Preventivo '+Q.numero+' salvato');
+}
+$('#btn-salva').addEventListener('click', ()=>salvaPreventivo(false));
+
+/* Scarica .html */
+$('#btn-scarica-html').addEventListener('click', ()=>{
+  const html = paginaCliente(Q, IMP);
+  const blob = new Blob([html], { type:'text/html;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'preventivo-'+Q.numero.toLowerCase()+'.html';
+  a.click();
+  URL.revokeObjectURL(a.href);
+  salvaPreventivo(true);
+  toast('Pagina scaricata: inviala al cliente come allegato');
+});
+
+/* Pubblica su GitHub Pages */
+$('#btn-pubblica').addEventListener('click', async ()=>{
+  if(!ghPronto() || !GH.repoPagine){
+    toast('Configura GitHub nelle Impostazioni per pubblicare online. In alternativa usa "Scarica .html".', 'errore');
+    return;
+  }
+  const bottone = $('#btn-pubblica');
+  bottone.disabled = true;
+  try{
+    if(!Q.slug) Q.slug = Q.numero.toLowerCase() + '-' + suffissoCasuale();
+    const percorso = 'p/' + Q.slug + '.html';
+    const html = paginaCliente(Q, IMP);
+    let sha;
+    try{ const r = await ghLeggi(GH.repoPagine, percorso); sha = r && r.sha; }
+    catch(e){ sha = undefined; }
+    await ghScrivi(GH.repoPagine, percorso, html, sha, 'Pubblica preventivo '+Q.numero);
+    Q.pubblicatoUrl = 'https://' + GH.utente + '.github.io/' + GH.repoPagine + '/' + percorso;
+    if(Q.stato==='bozza'){ Q.stato = 'inviato'; $('#e-stato').value = 'inviato'; aggiornaBadgeEditor(); }
+    salvaPreventivo(true);
+    $('#link-pubblicato').value = Q.pubblicatoUrl;
+    $('#btn-apri-link').href = Q.pubblicatoUrl;
+    apriModale('modale-link');
+  }catch(e){
+    console.error(e);
+    toast('Pubblicazione non riuscita: '+e.message, 'errore');
+  }finally{
+    bottone.disabled = false;
+  }
+});
+$('#btn-copia-link').addEventListener('click', async ()=>{
+  try{
+    await navigator.clipboard.writeText($('#link-pubblicato').value);
+    toast('Link copiato negli appunti');
+  }catch(e){
+    $('#link-pubblicato').select();
+    document.execCommand('copy');
+    toast('Link copiato');
+  }
+});
+</script>
+<script>
+/* ================================================================
+   Pagina cliente — file HTML autonomo generato dal preventivo
+================================================================ */
+function paginaCliente(p, imp){
+  const az = imp.azienda;
+  const titolo = (p.titolo||'').trim() || 'Il nuovo bagno di ' + ((p.clienteNome||'').trim().split(/\s+/)[0] || 'casa tua');
+  const intro = (p.intro||'').trim() || imp.default.intro;
+  const condizioni = imp.default.condizioni;
+  const scadenza = dataIT(scadenzaISO(p), true);
+  const t = totaliPreventivo(p);
+  const eyebrow = 'Preventivo ' + p.numero + ' · ' + dataIT(p.data, true);
+  const conFoto = p.foto && p.foto.length > 0;
+  const fotoExtra = conFoto ? p.foto.slice(1) : [];
+  const mostraSconto = p.voci.some(v=>(Number(v.sconto)||0) > 0);
+  const nCol = mostraSconto ? 5 : 4;
+
+  /* prodotti unici del preventivo con foto, per "La tua selezione" */
+  const visti = new Set();
+  const selezione = [];
+  for(const v of p.voci){
+    if(!v.prodottoId || visti.has(v.prodottoId)) continue;
+    visti.add(v.prodottoId);
+    const pr = CAT.prodotti.find(x=>x.id===v.prodottoId);
+    if(pr && pr.foto) selezione.push(pr);
+  }
+
+  /* righe tabella raggruppate nelle cinque categorie, ordine fisso */
+  let righe = '';
+  for(const cat of CATEGORIE){
+    const voci = p.voci.filter(v=>v.categoria===cat);
+    if(!voci.length) continue;
+    righe += '<tr class="cat-riga"><td colspan="'+nCol+'"><span>'+esc(cat)+'</span></td></tr>';
+    for(const v of voci){
+      const qta = String(v.qta).replace('.',',') + '&nbsp;' + esc(v.unita);
+      righe += '<tr>'
+        + '<td class="descr">'+esc(v.descrizione)+'</td>'
+        + '<td class="num qta">'+qta+'</td>'
+        + '<td class="num">'+euro(v.prezzo)+'</td>'
+        + (mostraSconto ? '<td class="num sconto">'+((Number(v.sconto)||0)>0 ? pct(v.sconto) : '')+'</td>' : '')
+        + '<td class="num importo">'+euro(importoVoce(v))+'</td>'
+        + '</tr>';
+    }
+  }
+
+  const heroFoto = conFoto ?
+    '<header class="hero">'
+    + '<img src="'+esc(p.foto[0])+'" alt="">'
+    + '<div class="hero-pannello">'
+    + '<p class="eyebrow">'+esc(eyebrow)+'</p>'
+    + '<h1>'+esc(titolo)+'</h1>'
+    + '<p class="firma">Preparato da '+esc(p.venditore||'')+' · '+esc(az.nome)+'</p>'
+    + '</div></header>'
+    :
+    '<header class="hero-scuro">'
+    + '<div class="hero-scuro-interno">'
+    + '<div class="filo-rosso"></div>'
+    + '<p class="eyebrow">'+esc(eyebrow)+'</p>'
+    + '<h1>'+esc(titolo)+'</h1>'
+    + '<p class="firma">Preparato da '+esc(p.venditore||'')+' · '+esc(az.nome)+'</p>'
+    + '</div></header>';
+
+  const galleriaExtra = fotoExtra.length
+    ? '<div class="griglia-foto reveal">' + fotoExtra.map(f=>'<img src="'+esc(f)+'" alt="" loading="lazy">').join('') + '</div>'
+    : '';
+
+  const blocchoSelezione = selezione.length
+    ? '<section class="sezione reveal"><p class="eyebrow accent">La tua selezione</p>'
+      + '<h2>I prodotti scelti per te</h2>'
+      + '<div class="selezione-griglia">'
+      + selezione.map(pr=>
+          '<figure class="selezione-card">'
+          + '<img src="'+esc(pr.foto)+'" alt="'+esc(pr.nome)+'" loading="lazy">'
+          + '<figcaption><strong>'+esc(pr.nome)+'</strong>'
+          + (pr.descrizione ? '<span>'+esc(pr.descrizione)+'</span>' : '')
+          + '</figcaption></figure>'
+        ).join('')
+      + '</div></section>'
+    : '';
+
+  const notaBlocco = (p.nota||'').trim()
+    ? '<aside class="nota reveal"><p class="eyebrow accent">Nota per te</p><p>'+escBr(p.nota)+'</p></aside>'
+    : '';
+
+  const waNumero = (az.whatsapp||'').replace(/\D/g,'');
+  const waMsg = encodeURIComponent('Ciao! Ho visto il preventivo '+p.numero+' e vorrei parlarne con voi.');
+  const telHref = 'tel:' + (az.telefono||'').replace(/[^\d+]/g,'');
+  const mailHref = 'mailto:' + (az.email||'') + '?subject=' + encodeURIComponent('Preventivo '+p.numero);
+
+  const marchioFooter = az.logo
+    ? '<img class="logo" src="'+esc(az.logo)+'" alt="'+esc(az.nome)+'">'
+    : '<span class="wordmark">schläfer</span>';
+
+  const righeRiepilogo =
+    '<div class="rie-riga"><span>Totale voci</span><span class="val">'+euro(t.totaleVoci)+'</span></div>'
+    + (t.sconto>0 ? '<div class="rie-riga"><span>Sconto riservato '+pct(p.scontoFinale)+'</span><span class="val rosso">−'+euro(t.sconto).replace('−','')+'</span></div>' : '')
+    + '<div class="rie-riga"><span>Imponibile</span><span class="val">'+euro(t.imponibile)+'</span></div>'
+    + '<div class="rie-riga"><span>IVA '+p.iva+'%</span><span class="val">'+euro(t.iva)+'</span></div>'
+    + '<div class="rie-riga totale"><span>Totale</span><span class="val">'+euro(t.totale)+'</span></div>';
+
+  return '<!DOCTYPE html>\n<html lang="it">\n<head>\n'
++ '<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1.0">\n'
++ '<meta name="robots" content="noindex, nofollow">\n'
++ '<title>'+esc('Preventivo '+p.numero+' — '+az.nome)+'</title>\n'
++ '<link rel="preconnect" href="https://fonts.googleapis.com">\n<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n'
++ '<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800&family=Barlow+Semi+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">\n'
++ '<style>\n'
++ ':root{--rosso:#CA003A;--rosso-600:#A80031;--blu:#0076BB;--ink:#1C2120;--testo:#2C3231;--muted:#6F7675;--bordo:#DEE1E0;--fill:#F0F2F1;--pagina:#F7F8F8;}\n'
++ '*{margin:0;padding:0;box-sizing:border-box}\n'
++ 'body{font-family:"Barlow",sans-serif;color:var(--testo);background:#fff;font-size:16px;line-height:1.6;-webkit-text-size-adjust:100%}\n'
++ 'img{max-width:100%;display:block}\n'
++ '.eyebrow{font-family:"Barlow Semi Condensed",sans-serif;font-weight:600;font-size:12.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}\n'
++ '.eyebrow.accent{color:var(--rosso)}\n'
++ 'h1{font-weight:800;font-size:clamp(30px,5.5vw,50px);line-height:1.06;letter-spacing:-.015em;color:var(--ink);margin:10px 0 12px}\n'
++ 'h2{font-weight:800;font-size:clamp(22px,3vw,30px);letter-spacing:-.01em;color:var(--ink);margin:8px 0 20px}\n'
++ '.hero{position:relative;height:60vh;min-height:430px}\n'
++ '.hero img{width:100%;height:100%;object-fit:cover}\n'
++ '.hero-pannello{position:absolute;left:clamp(16px,5vw,64px);bottom:clamp(16px,4vw,44px);background:#fff;border:1px solid var(--bordo);border-top:3px solid var(--rosso);border-radius:16px;padding:clamp(20px,3vw,34px) clamp(22px,3.4vw,40px);max-width:min(620px,calc(100% - 32px));box-shadow:0 12px 34px rgba(28,33,32,.16)}\n'
++ '.hero-pannello h1{margin:10px 0 8px}\n'
++ '.firma{font-size:15px;color:var(--muted)}\n'
++ '.hero-scuro{background:var(--ink);color:#fff;padding:clamp(64px,11vw,130px) 0 clamp(56px,9vw,110px)}\n'
++ '.hero-scuro-interno{max-width:980px;margin:0 auto;padding:0 24px}\n'
++ '.filo-rosso{width:56px;height:4px;background:var(--rosso);border-radius:2px;margin-bottom:26px}\n'
++ '.hero-scuro .eyebrow{color:#9CA3A1}\n'
++ '.hero-scuro h1{color:#fff}\n'
++ '.hero-scuro .firma{color:#9CA3A1}\n'
++ 'main{max-width:980px;margin:0 auto;padding:0 24px}\n'
++ '.sezione{padding:clamp(40px,6vw,72px) 0 0}\n'
++ '.intro-testo{font-size:clamp(17px,2vw,19px);line-height:1.7;max-width:46em;color:var(--testo)}\n'
++ '.griglia-foto{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-top:28px}\n'
++ '.griglia-foto img{border-radius:10px;border:1px solid var(--bordo);width:100%;height:280px;object-fit:cover}\n'
++ '.selezione-griglia{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:16px}\n'
++ '.selezione-card{background:#fff;border:1px solid var(--bordo);border-radius:10px;overflow:hidden;box-shadow:0 1px 2px rgba(44,50,49,.05),0 4px 14px rgba(44,50,49,.06)}\n'
++ '.selezione-card img{aspect-ratio:4/3;width:100%;object-fit:cover;background:var(--fill)}\n'
++ '.selezione-card figcaption{padding:13px 15px 15px}\n'
++ '.selezione-card strong{display:block;font-size:15px;font-weight:700;color:var(--ink);line-height:1.3}\n'
++ '.selezione-card span{display:block;font-size:13px;color:var(--muted);line-height:1.5;margin-top:4px}\n'
++ '.tab-wrap{border:1px solid var(--bordo);border-radius:10px;overflow-x:auto;background:#fff;box-shadow:0 1px 2px rgba(44,50,49,.05),0 4px 14px rgba(44,50,49,.06)}\n'
++ 'table{width:100%;border-collapse:collapse;min-width:560px}\n'
++ 'th{font-family:"Barlow Semi Condensed",sans-serif;font-weight:600;font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);text-align:left;padding:13px 16px;border-bottom:1px solid var(--bordo);white-space:nowrap}\n'
++ 'td{padding:12px 16px;border-bottom:1px solid var(--bordo);vertical-align:top;font-size:15px}\n'
++ 'tr:last-child td{border-bottom:none}\n'
++ 'th.num,td.num{text-align:right;white-space:nowrap}\n'
++ 'td.num{font-family:"IBM Plex Mono",monospace;font-size:13.5px;font-variant-numeric:tabular-nums}\n'
++ 'td.qta{color:var(--muted)}\n'
++ 'td.sconto{color:var(--rosso)}\n'
++ 'td.importo{font-weight:600;color:var(--ink)}\n'
++ 'td.descr{font-weight:500;color:var(--ink)}\n'
++ '.cat-riga td{background:var(--pagina);border-bottom:1px solid var(--bordo);padding:9px 16px}\n'
++ '.cat-riga span{font-family:"Barlow Semi Condensed",sans-serif;font-weight:700;font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink);border-left:3px solid var(--rosso);padding-left:9px}\n'
++ '.riepilogo{margin-left:auto;max-width:360px;padding:22px 0 0;display:flex;flex-direction:column;gap:9px}\n'
++ '.rie-riga{display:flex;justify-content:space-between;gap:24px;font-size:15px;color:var(--muted)}\n'
++ '.rie-riga .val{font-family:"IBM Plex Mono",monospace;font-size:14px;color:var(--testo);font-variant-numeric:tabular-nums}\n'
++ '.rie-riga .val.rosso{color:var(--rosso)}\n'
++ '.rie-riga.totale{border-top:2px solid var(--ink);padding-top:12px;margin-top:4px;align-items:baseline}\n'
++ '.rie-riga.totale span:first-child{font-family:"Barlow Semi Condensed",sans-serif;font-weight:700;font-size:13px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink)}\n'
++ '.rie-riga.totale .val{font-family:"Barlow",sans-serif;font-weight:800;font-size:30px;color:var(--rosso);letter-spacing:-.01em}\n'
++ '.validita{margin-top:22px;font-size:14.5px;color:var(--muted);display:flex;align-items:center;gap:9px}\n'
++ '.validita svg{width:16px;height:16px;flex:none;color:var(--rosso)}\n'
++ '.nota{margin-top:30px;background:var(--pagina);border:1px solid var(--bordo);border-left:3px solid var(--rosso);border-radius:10px;padding:20px 24px}\n'
++ '.nota p:last-child{margin-top:6px;font-size:15.5px;color:var(--ink)}\n'
++ '.condizioni{margin-top:34px;font-size:12.5px;color:var(--muted);line-height:1.65;max-width:56em}\n'
++ '.cta{background:var(--rosso);color:#fff;margin-top:clamp(48px,7vw,80px)}\n'
++ '.cta-interno{max-width:980px;margin:0 auto;padding:clamp(44px,6vw,68px) 24px;text-align:center}\n'
++ '.cta h2{color:#fff;font-size:clamp(26px,4vw,38px);margin:0 0 10px}\n'
++ '.cta p{font-size:16.5px;opacity:.92;max-width:36em;margin:0 auto}\n'
++ '.cta-bottoni{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:28px}\n'
++ '.btn{display:inline-flex;align-items:center;gap:9px;font-weight:700;font-size:15.5px;padding:13px 24px;border-radius:8px;text-decoration:none;transition:background 180ms cubic-bezier(.2,0,0,1),color 180ms cubic-bezier(.2,0,0,1)}\n'
++ '.btn:active{transform:translateY(1px)}\n'
++ '.btn svg{width:18px;height:18px}\n'
++ '.btn-bianco{background:#fff;color:var(--rosso)}\n'
++ '.btn-bianco:hover{background:#FFE3EB}\n'
++ '.btn-contorno{border:1.5px solid rgba(255,255,255,.85);color:#fff}\n'
++ '.btn-contorno:hover{background:rgba(255,255,255,.12)}\n'
++ 'footer{background:var(--ink);color:#9CA3A1;font-size:13.5px}\n'
++ '.footer-interno{max-width:980px;margin:0 auto;padding:34px 24px;display:flex;gap:20px;flex-wrap:wrap;align-items:center;justify-content:space-between;line-height:1.7}\n'
++ 'footer .wordmark{font-weight:800;font-size:22px;color:#fff}\n'
++ 'footer .logo{max-height:34px;width:auto}\n'
++ 'footer a{color:#C6CBCA}\n'
++ '.reveal{opacity:0;transform:translateY(14px);transition:opacity 280ms cubic-bezier(.2,0,0,1),transform 280ms cubic-bezier(.2,0,0,1)}\n'
++ '.reveal.vista{opacity:1;transform:none}\n'
++ '@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}\n'
++ '@media (max-width:640px){.hero{height:52vh;min-height:360px}.hero-pannello{left:14px;right:14px;bottom:14px;max-width:none}}\n'
++ '@media print{\n'
++ '  body{background:#fff;font-size:12.5px}\n'
++ '  .hero{height:auto;min-height:0}.hero img{max-height:56mm;object-fit:cover}\n'
++ '  .hero-pannello{position:static;box-shadow:none;margin:6mm 0 0;max-width:none}\n'
++ '  .hero-scuro{-webkit-print-color-adjust:exact;print-color-adjust:exact}\n'
++ '  .cta{display:none}\n'
++ '  .reveal{opacity:1!important;transform:none!important;transition:none!important}\n'
++ '  .sezione{padding-top:9mm}\n'
++ '  .tab-wrap,.selezione-card,.nota{box-shadow:none}\n'
++ '  tr,figure{break-inside:avoid}\n'
++ '  a{text-decoration:none;color:inherit}\n'
++ '}\n'
++ '</style>\n</head>\n<body>\n'
++ heroFoto
++ '<main>'
++ '<section class="sezione reveal"><p class="eyebrow accent">La proposta</p><h2>Pensata su misura per te</h2>'
++ '<p class="intro-testo">'+escBr(intro)+'</p>'
++ galleriaExtra
++ '</section>'
++ blocchoSelezione
++ '<section class="sezione reveal"><p class="eyebrow accent">Il preventivo nel dettaglio</p>'
++ '<h2>Voci e importi</h2>'
++ '<div class="tab-wrap"><table>'
++ '<thead><tr><th>Descrizione</th><th class="num">Q.tà</th><th class="num">Prezzo</th>'+(mostraSconto?'<th class="num">Sconto</th>':'')+'<th class="num">Importo</th></tr></thead>'
++ '<tbody>'+righe+'</tbody>'
++ '</table></div>'
++ '<div class="riepilogo">'+righeRiepilogo+'</div>'
++ '<p class="validita"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Offerta valida fino al '+esc(scadenza)+'.</p>'
++ notaBlocco
++ '<p class="condizioni">'+escBr(condizioni)+'</p>'
++ '</section>'
++ '</main>'
++ '<section class="cta"><div class="cta-interno reveal">'
++ '<h2>Ti convince questa proposta?</h2>'
++ '<p>Confermala con un messaggio, oppure chiamaci: rispondiamo in giornata e blocchiamo subito i materiali per il tuo cantiere.</p>'
++ '<div class="cta-bottoni">'
++ (waNumero ? '<a class="btn btn-bianco" href="https://wa.me/'+waNumero+'?text='+waMsg+'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>Conferma su WhatsApp</a>' : '')
++ (az.telefono ? '<a class="btn btn-contorno" href="'+esc(telHref)+'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Chiamaci</a>' : '')
++ (az.email ? '<a class="btn btn-contorno" href="'+esc(mailHref)+'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>Scrivici una mail</a>' : '')
++ '</div></div></section>'
++ '<footer><div class="footer-interno">'
++ '<div>'+marchioFooter+'</div>'
++ '<div>'+esc(az.nome)+(az.payoff?' · '+esc(az.payoff):'')+'<br>'
++ esc(az.indirizzo||'')+(az.piva?' · P.IVA '+esc(az.piva):'')+'<br>'
++ (az.telefono?'Tel. '+esc(az.telefono)+' · ':'')+(az.email?'<a href="mailto:'+esc(az.email)+'">'+esc(az.email)+'</a>':'')
++ (az.sito?' · <a href="https://'+esc(az.sito.replace(/^https?:\/\//,''))+'" target="_blank" rel="noopener">'+esc(az.sito.replace(/^https?:\/\//,''))+'</a>':'')
++ '</div>'
++ '</div></footer>'
++ '<script>\n'
++ 'if(!window.matchMedia("(prefers-reduced-motion: reduce)").matches && "IntersectionObserver" in window){\n'
++ '  var oss=new IntersectionObserver(function(vs){vs.forEach(function(v){if(v.isIntersecting){v.target.classList.add("vista");oss.unobserve(v.target);}});},{threshold:.08});\n'
++ '  document.querySelectorAll(".reveal").forEach(function(el){oss.observe(el);});\n'
++ '}else{document.querySelectorAll(".reveal").forEach(function(el){el.classList.add("vista");});}\n'
++ '<\/script>\n'
++ '</body>\n</html>';
+}
+</script>
+<script>
+/* ================================================================
+   Impostazioni
+================================================================ */
+function riempiImpostazioni(){
+  const az = IMP.azienda, df = IMP.default;
+  $('#i-nome').value = az.nome;
+  $('#i-payoff').value = az.payoff;
+  $('#i-telefono').value = az.telefono;
+  $('#i-whatsapp').value = az.whatsapp;
+  $('#i-email').value = az.email;
+  $('#i-indirizzo').value = az.indirizzo;
+  $('#i-piva').value = az.piva;
+  $('#i-sito').value = az.sito || '';
+  $('#i-iva').value = String(df.iva);
+  $('#i-validita').value = df.validita;
+  $('#i-intro').value = df.intro;
+  $('#i-condizioni').value = df.condizioni;
+  $('#i-venditori').value = IMP.venditori.join('\n');
+  aggiornaLogoUI();
+  $('#i-gh-token').value = GH.token;
+  $('#i-gh-utente').value = GH.utente;
+  $('#i-gh-repo-dati').value = GH.repoDati;
+  $('#i-gh-repo-pagine').value = GH.repoPagine;
+  $('#i-gh-branch').value = GH.branch || 'main';
+  $('#btn-gh-scollega').style.display = GH.attivo ? '' : 'none';
+  if(GH.attivo) mostraStatoGH('ok', 'Collegato come '+GH.utente+' — dati su "'+GH.repoDati+'", pagine su "'+GH.repoPagine+'".');
+}
+function aggiornaLogoUI(){
+  const c = IMP.azienda.logo;
+  $('#logo-anteprima').style.display = c ? '' : 'none';
+  if(c) $('#logo-anteprima').src = c;
+  $('#logo-mancante').style.display = c ? 'none' : '';
+  $('#btn-rimuovi-logo').style.display = c ? '' : 'none';
+}
+$('#btn-carica-logo').addEventListener('click', ()=>$('#input-logo').click());
+$('#btn-rimuovi-logo').addEventListener('click', ()=>{ IMP.azienda.logo=''; aggiornaLogoUI(); });
+$('#input-logo').addEventListener('change', async e=>{
+  const f = e.target.files[0];
+  e.target.value = '';
+  if(!f) return;
+  try{
+    if(f.type==='image/svg+xml' || f.size < 200*1024){
+      IMP.azienda.logo = await new Promise((ris,rif)=>{ const r=new FileReader(); r.onload=()=>ris(r.result); r.onerror=rif; r.readAsDataURL(f); });
+    } else {
+      IMP.azienda.logo = await compressaImmagine(f, 600);
+    }
+    aggiornaLogoUI();
+  }catch(err){ toast('Logo non leggibile', 'errore'); }
+});
+$('#btn-salva-impostazioni').addEventListener('click', async ()=>{
+  IMP.azienda = {
+    nome: $('#i-nome').value.trim(),
+    payoff: $('#i-payoff').value.trim(),
+    logo: IMP.azienda.logo,
+    telefono: $('#i-telefono').value.trim(),
+    whatsapp: $('#i-whatsapp').value.trim(),
+    email: $('#i-email').value.trim(),
+    indirizzo: $('#i-indirizzo').value.trim(),
+    piva: $('#i-piva').value.trim(),
+    sito: $('#i-sito').value.trim()
+  };
+  IMP.default = {
+    iva: Number($('#i-iva').value),
+    validita: Number($('#i-validita').value)||30,
+    intro: $('#i-intro').value.trim(),
+    condizioni: $('#i-condizioni').value.trim()
+  };
+  IMP.venditori = $('#i-venditori').value.split('\n').map(s=>s.trim()).filter(Boolean);
+  if(!IMP.venditori.length) IMP.venditori = ['Titolare'];
+  IMP.aggiornatoIl = Date.now();
+  GH.branch = $('#i-gh-branch').value.trim() || 'main';
+  await salvaEsincronizza();
+  toast('Impostazioni salvate');
+});
+
+/* Collega e verifica GitHub */
+function mostraStatoGH(tipo, testo){
+  const el = $('#gh-stato');
+  el.style.display = '';
+  el.className = 'stato-github ' + (tipo||'');
+  el.textContent = testo;
+}
+$('#btn-gh-collega').addEventListener('click', async ()=>{
+  const token = $('#i-gh-token').value.trim();
+  const utente = $('#i-gh-utente').value.trim();
+  const repoDati = $('#i-gh-repo-dati').value.trim();
+  const repoPagine = $('#i-gh-repo-pagine').value.trim();
+  const branch = $('#i-gh-branch').value.trim() || 'main';
+  if(!token || !utente || !repoDati){
+    mostraStatoGH('errore','Servono almeno token, utente e repository dati.');
+    return;
+  }
+  const bottone = $('#btn-gh-collega');
+  bottone.disabled = true;
+  mostraStatoGH('', 'Verifica in corso…');
+  try{
+    const test = async (repo)=>{
+      const r = await fetch('https://api.github.com/repos/'+utente+'/'+repo, { headers:{ 'Authorization':'Bearer '+token, 'Accept':'application/vnd.github+json' } });
+      if(r.status===404) throw new Error('repository "'+repo+'" non trovato o token senza accesso');
+      if(r.status===401) throw new Error('token non valido o scaduto');
+      if(!r.ok) throw new Error('accesso a "'+repo+'" fallito ('+r.status+')');
+      return r.json();
+    };
+    await test(repoDati);
+    if(repoPagine) await test(repoPagine);
+    GH = { token, utente, repoDati, repoPagine, branch, attivo:true };
+    salvaLS();
+    const ok = await sincronizza(true);
+    if(ok){
+      mostraStatoGH('ok','Collegato. Primo allineamento completato: archivio e catalogo ora sono condivisi.'+(repoPagine?'':' (Repository pagine non indicato: la pubblicazione online resta disattivata.)'));
+      $('#btn-gh-scollega').style.display = '';
+      disegnaArchivio();
+      toast('GitHub collegato e sincronizzato');
+    } else {
+      mostraStatoGH('errore','Token valido ma sincronizzazione fallita. Controlla che il token abbia il permesso Contents: Read and write.');
+    }
+  }catch(e){
+    GH.attivo = false;
+    salvaLS();
+    mostraStatoGH('errore','Verifica fallita: '+e.message+'.');
+    aggiornaSyncUI('demo','Modalità demo (locale)');
+  }finally{
+    bottone.disabled = false;
+  }
+});
+$('#btn-gh-scollega').addEventListener('click', ()=>{
+  GH = { token:'', utente:'', repoDati:'', repoPagine:'', branch:'main', attivo:false };
+  salvaLS();
+  riempiImpostazioni();
+  $('#gh-stato').style.display = 'none';
+  aggiornaSyncUI('demo','Modalità demo (locale)');
+  toast('GitHub scollegato: l\'app continua in locale');
+});
+
+/* ================================================================
+   Avvio
+================================================================ */
+caricaStato();
+disegnaArchivio();
+if(ghPronto()){
+  sincronizza(false).then(ok=>{ if(ok) disegnaArchivio(); });
+} else {
+  aggiornaSyncUI('demo','Modalità demo (locale)');
+}
+</script>
+
+
+
+
+
+
+</body>
+</html>
