@@ -44,10 +44,8 @@ input,select,textarea{font:inherit;color:var(--ink)}
 
 /* ============ Sidebar ============ */
 #sidebar{position:fixed;inset:0 auto 0 0;width:var(--sidebar-w);background:var(--ink);color:#E7E9E8;display:flex;flex-direction:column;z-index:40;transition:transform var(--t3) var(--ease)}
-.marchio{padding:22px 20px 18px;border-bottom:1px solid rgba(255,255,255,.08)}
-.marchio .wordmark{font-weight:800;font-size:26px;letter-spacing:-.01em;color:#fff;line-height:1}
-.marchio .wordmark i{font-style:normal;color:var(--rosso)}
-.marchio .payoff{font-family:var(--font-cond);font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:#8D9492;margin-top:6px}
+.marchio{padding:15px 6px 14px;border-bottom:1px solid rgba(255,255,255,.08)}
+.marchio-logo{display:block;width:126px;height:auto;overflow:visible}
 #sidebar nav{padding:14px 10px;display:flex;flex-direction:column;gap:2px;flex:1}
 .nav-voce{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:var(--r);color:#C6CBCA;font-weight:500;font-size:15px;position:relative;text-align:left;transition:background var(--t1) var(--ease),color var(--t1) var(--ease)}
 .nav-voce svg{width:18px;height:18px;flex:none}
@@ -278,8 +276,10 @@ details.blocco-guida .guida{padding:0 16px 14px}
 
 <aside id="sidebar">
   <div class="marchio">
-    <div class="wordmark">schl<i>ä</i>fer</div>
-    <div class="payoff">Der HeimwerkerProfi</div>
+    <svg class="marchio-logo" viewBox="0 0 126 43" role="img" aria-label="Schläfer — Der HeimwerkerProfi">
+      <text x="0" y="22" fill="#FFFFFF" font-family="Barlow, Arial, sans-serif" font-size="25" font-weight="800" letter-spacing="-.5"><tspan>schl</tspan><tspan fill="#CA003A">ä</tspan><tspan>fer</tspan></text>
+      <text x="0" y="40" fill="#8D9492" font-family="Barlow Semi Condensed, Arial, sans-serif" font-size="9.5" font-weight="500" letter-spacing="1.05">DER HEIMWERKERPROFI</text>
+    </svg>
   </div>
   <nav>
     <button class="nav-voce attiva" data-vista="archivio">
