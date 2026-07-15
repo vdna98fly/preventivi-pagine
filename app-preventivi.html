@@ -707,7 +707,7 @@ details.blocco-guida .guida{padding:0 16px 14px}
           <div><strong>Dati interni per il fornitore</strong><span>Queste informazioni servono per chiedere le quotazioni e non compaiono mai nella pagina del cliente.</span></div>
         </div>
         <div class="griglia g2">
-          <div class="campo"><label for="p-fornitore-nome">Fornitore</label><input id="p-fornitore-nome" type="text" list="p-fornitori-salvati" autocomplete="off" placeholder="Es. Ideal Standard"><datalist id="p-fornitori-salvati"></datalist><span class="aiuto">Scrivi un nuovo fornitore o scegline uno già salvato.</span></div>
+          <div class="campo"><label for="p-fornitore-salvato">Fornitore</label><select id="p-fornitore-salvato"><option value="">+ Inserisci un nuovo fornitore</option></select><input id="p-fornitore-nome" type="text" autocomplete="off" aria-label="Nome fornitore" placeholder="Oppure scrivi il nome del nuovo fornitore"><span class="aiuto">La tendina mostra i fornitori già memorizzati.</span></div>
           <div class="campo"><label for="p-fornitore-email">Email fornitore</label><input id="p-fornitore-email" type="email" placeholder="preventivi@fornitore.it"></div>
         </div>
         <div class="griglia g3">
@@ -1705,15 +1705,20 @@ function fornitoreMemorizzato(nome){
   const id = chiaveFornitore(nome);
   return id ? CAT.fornitori.find(f=>f.id===id) || null : null;
 }
-function disegnaFornitoriMemoria(){
+function disegnaFornitoriMemoria(selezionato){
   normalizzaCatalogo(CAT);
-  $('#p-fornitori-salvati').innerHTML = CAT.fornitori.map(f=>
-    '<option value="'+esc(f.nome)+'"'+(f.email ? ' label="'+esc(f.email)+'"' : '')+'></option>'
+  const idSelezionato = chiaveFornitore(selezionato);
+  const select = $('#p-fornitore-salvato');
+  select.innerHTML = '<option value="">+ Inserisci un nuovo fornitore</option>' + CAT.fornitori.map(f=>
+    '<option value="'+esc(f.id)+'">'+esc(f.nome)+(f.email ? ' · '+esc(f.email) : '')+'</option>'
   ).join('');
+  select.value = CAT.fornitori.some(f=>f.id===idSelezionato) ? idSelezionato : '';
 }
 function applicaFornitoreMemorizzato(nome){
   const fornitore = fornitoreMemorizzato(nome);
   if(!fornitore) return false;
+  $('#p-fornitore-salvato').value = fornitore.id;
+  $('#p-fornitore-nome').value = fornitore.nome;
   if(fornitore.email) $('#p-fornitore-email').value = fornitore.email;
   return true;
 }
@@ -1746,9 +1751,10 @@ function apriModaleProdotto(p, duplica){
   $('#p-costo').value = p ? (p.costo||'') : '';
   $('#p-prezzo').value = p ? p.prezzo : '';
   $('#p-unita').value = p ? p.unita : 'pz';
-  disegnaFornitoriMemoria();
-  $('#p-fornitore-nome').value = p ? (p.fornitoreNome||'') : '';
-  const fornitoreSalvato = p ? fornitoreMemorizzato(p.fornitoreNome) : null;
+  const nomeFornitore = p ? (p.fornitoreNome||'') : '';
+  $('#p-fornitore-nome').value = nomeFornitore;
+  const fornitoreSalvato = p ? fornitoreMemorizzato(nomeFornitore) : null;
+  disegnaFornitoriMemoria(fornitoreSalvato&&fornitoreSalvato.nome);
   $('#p-fornitore-email').value = fornitoreSalvato&&fornitoreSalvato.email ? fornitoreSalvato.email : p ? (p.fornitoreEmail||'') : '';
   $('#p-codice-fornitore').value = p ? (p.codiceFornitore||'') : '';
   $('#p-colore').value = p ? (p.colore||'') : '';
@@ -1794,7 +1800,17 @@ function aggiornaFotoProdottoUI(){
 $('#p-categoria').addEventListener('change', aggiornaFotoProdottoUI);
 $('#p-costo').addEventListener('input', aggiornaMargineProdottoUI);
 $('#p-prezzo').addEventListener('input', aggiornaMargineProdottoUI);
-$('#p-fornitore-nome').addEventListener('input', e=>applicaFornitoreMemorizzato(e.target.value));
+$('#p-fornitore-salvato').addEventListener('change', e=>{
+  if(e.target.value){ applicaFornitoreMemorizzato(e.target.value); return; }
+  $('#p-fornitore-nome').value = '';
+  $('#p-fornitore-email').value = '';
+  $('#p-fornitore-nome').focus();
+});
+$('#p-fornitore-nome').addEventListener('input', e=>{
+  const fornitore = fornitoreMemorizzato(e.target.value);
+  $('#p-fornitore-salvato').value = fornitore ? fornitore.id : '';
+  if(fornitore&&fornitore.email) $('#p-fornitore-email').value = fornitore.email;
+});
 $('#btn-nuovo-prodotto').addEventListener('click', ()=>apriModaleProdotto(null));
 $('#btn-carica-foto-prodotto').addEventListener('click', ()=>$('#input-foto-prodotto').click());
 $('#btn-rimuovi-foto-prodotto').addEventListener('click', ()=>{ fotoProdottoTemp=''; aggiornaFotoProdottoUI(); });
