@@ -154,8 +154,9 @@ td.num,th.num{text-align:right;font-family:var(--font-mono);font-variant-numeric
 .prodotto-interno{font-family:var(--font-mono);font-size:11.5px;color:var(--muted);padding-top:5px;border-top:1px solid var(--bordo)}
 .prodotto-azioni{display:flex;border-top:1px solid var(--bordo)}
 .prodotto-azioni button{flex:1;padding:9px;font-weight:600;font-size:13px;color:var(--blu);transition:background var(--t1) var(--ease)}
+.prodotto-azioni button+button{border-left:1px solid var(--bordo)}
 .prodotto-azioni button:hover{background:rgba(0,118,187,.07)}
-.prodotto-azioni button.rossa{color:var(--err);border-left:1px solid var(--bordo)}
+.prodotto-azioni button.rossa{color:var(--err)}
 .prodotto-azioni button.rossa:hover{background:rgba(212,34,52,.06)}
 
 /* ============ Editor ============ */
@@ -1369,6 +1370,7 @@ function disegnaCatalogo(){
      + '</div>'
     + '<div class="prodotto-azioni">'
     + '<button data-azione="modifica">Modifica</button>'
+    + '<button data-azione="duplica" title="Crea un nuovo prodotto partendo da questo">Duplica</button>'
     + '<button data-azione="elimina" class="rossa">Elimina</button>'
     + '</div></article>'
   ).join('');
@@ -1380,6 +1382,7 @@ $('#griglia-catalogo').addEventListener('click', e=>{
   const p = CAT.prodotti.find(x=>x.id===card.dataset.id);
   if(!p) return;
   if(bottone.dataset.azione==='modifica') apriModaleProdotto(p);
+  if(bottone.dataset.azione==='duplica') apriModaleProdotto(p, true);
   if(bottone.dataset.azione==='elimina'){
     chiediConferma('Eliminare "'+p.nome+'" dal catalogo condiviso?', ()=>{
       CAT.prodotti = CAT.prodotti.filter(x=>x.id!==p.id);
@@ -1393,13 +1396,16 @@ $('#griglia-catalogo').addEventListener('click', e=>{
 
 /* Modale prodotto */
 let prodottoInModifica = null;
+let duplicazioneProdottoAttiva = false;
 let fotoProdottoTemp = '';
 let allegatiProdottoTemp = [];
-function apriModaleProdotto(p){
-  prodottoInModifica = p || null;
+function apriModaleProdotto(p, duplica){
+  duplicazioneProdottoAttiva = !!(p && duplica);
+  prodottoInModifica = duplicazioneProdottoAttiva ? null : (p || null);
   fotoProdottoTemp = p ? (p.foto||'') : '';
   allegatiProdottoTemp = p ? JSON.parse(JSON.stringify(p.allegati||[])) : [];
-  $('#modale-prodotto-titolo').textContent = p ? 'Modifica prodotto' : 'Nuovo prodotto';
+  $('#modale-prodotto-titolo').textContent = duplicazioneProdottoAttiva ? 'Duplica prodotto' : p ? 'Modifica prodotto' : 'Nuovo prodotto';
+  $('#btn-salva-prodotto').textContent = duplicazioneProdottoAttiva ? 'Crea duplicato' : 'Salva prodotto';
   $('#p-nome').value = p ? p.nome : '';
   const sel = $('#p-categoria');
   sel.innerHTML = CATEGORIE.map(c=>'<option>'+esc(c)+'</option>').join('');
@@ -1413,6 +1419,15 @@ function apriModaleProdotto(p){
   disegnaAllegatiProdottoUI();
   apriModale('modale-prodotto');
   $('#p-nome').focus();
+}
+function registraProdotto(dati){
+  if(prodottoInModifica){
+    Object.assign(prodottoInModifica, dati);
+    return prodottoInModifica;
+  }
+  const nuovo = Object.assign({ id:uid() }, dati);
+  CAT.prodotti.push(nuovo);
+  return nuovo;
 }
 function aggiornaMargineProdottoUI(){
   const costo = numeroLimitato($('#p-costo').value, 0, Number.MAX_SAFE_INTEGER, 0);
@@ -1484,12 +1499,12 @@ $('#btn-salva-prodotto').addEventListener('click', ()=>{
     allegati: allegatiProdottoTemp,
     aggiornatoIl: Date.now()
   };
-  if(prodottoInModifica) Object.assign(prodottoInModifica, dati);
-  else CAT.prodotti.push(Object.assign({ id:uid() }, dati));
+  const messaggio = prodottoInModifica ? 'Prodotto aggiornato' : duplicazioneProdottoAttiva ? 'Prodotto duplicato' : 'Prodotto aggiunto al catalogo';
+  registraProdotto(dati);
   chiudiModale('modale-prodotto');
   disegnaCatalogo();
   salvaEsincronizza();
-  toast(prodottoInModifica ? 'Prodotto aggiornato' : 'Prodotto aggiunto al catalogo');
+  toast(messaggio);
 });
 </script>
 <script>
