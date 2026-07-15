@@ -1043,11 +1043,11 @@ function ghHeaders(){
 }
 let ghLetturaSeriale = 0;
 async function ghLeggi(repo, percorso){
-  /* Un URL diverso e no-store sono indispensabili dopo un 409: altrimenti il browser
-     puo restituire di nuovo dalla cache lo SHA che GitHub ha appena rifiutato. */
+  /* Un URL diverso e sufficiente dopo un 409: evita lo SHA in cache senza aggiungere
+     header Cache-Control, che l'API GitHub non autorizza nelle richieste CORS. */
   const antiCache = Date.now()+'-'+(++ghLetturaSeriale);
   const url = 'https://api.github.com/repos/'+GH.utente+'/'+repo+'/contents/'+percorso+'?ref='+encodeURIComponent(GH.branch||'main')+'&_='+antiCache;
-  const r = await fetch(url, { headers: Object.assign({'Cache-Control':'no-cache'}, ghHeaders()), cache:'no-store' });
+  const r = await fetch(url, { headers: ghHeaders() });
   if(r.status === 404) return null;
   if(!r.ok) throw new Error('GitHub: lettura di '+percorso+' fallita ('+r.status+')');
   const j = await r.json();
