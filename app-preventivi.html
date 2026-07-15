@@ -151,6 +151,7 @@ td.num,th.num{text-align:right;font-family:var(--font-mono);font-variant-numeric
 .prodotto-piede{display:flex;align-items:baseline;justify-content:space-between;margin-top:6px;gap:8px}
 .prodotto-prezzo{font-weight:800;font-size:17px;color:var(--rosso);font-variant-numeric:tabular-nums}
 .prodotto-unita{font-family:var(--font-mono);font-size:12px;color:var(--muted)}
+.prodotto-interno{font-family:var(--font-mono);font-size:11.5px;color:var(--muted);padding-top:5px;border-top:1px solid var(--bordo)}
 .prodotto-azioni{display:flex;border-top:1px solid var(--bordo)}
 .prodotto-azioni button{flex:1;padding:9px;font-weight:600;font-size:13px;color:var(--blu);transition:background var(--t1) var(--ease)}
 .prodotto-azioni button:hover{background:rgba(0,118,187,.07)}
@@ -205,6 +206,19 @@ td.num,th.num{text-align:right;font-family:var(--font-mono);font-variant-numeric
 .foto-aggiungi{width:110px;height:82px;border:1.5px dashed var(--bordo-forte);border-radius:var(--r);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:var(--muted);font-size:11.5px;font-weight:600;transition:all var(--t1) var(--ease)}
 .foto-aggiungi:hover{border-color:var(--blu);color:var(--blu)}
 .foto-aggiungi svg{width:18px;height:18px}
+.revisioni-lista{display:flex;flex-direction:column;gap:9px}
+.revisione-riga{border:1px solid var(--bordo);border-radius:var(--r);background:var(--pagina);padding:10px 12px}
+.revisione-riga summary{cursor:pointer;font-weight:700;color:var(--ink);display:flex;gap:9px;align-items:center;list-style:none}
+.revisione-riga summary::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--rosso);flex:none}
+.revisione-riga time{font-weight:400;font-size:12.5px;color:var(--muted);margin-left:auto}
+.revisione-riga ul{padding:8px 0 0 28px;color:var(--testo);font-size:13px;display:flex;flex-direction:column;gap:3px}
+.versione-corrente{font-family:var(--font-mono);font-size:12px;color:var(--rosso);background:#FFE8EF;border:1px solid #F2B8C8;border-radius:var(--r-pill);padding:3px 9px;margin-left:auto}
+.margine-box{background:var(--pagina);border:1px solid var(--bordo);border-left:3px solid var(--blu);border-radius:var(--r);padding:10px 12px;font-size:13px;color:var(--muted)}
+.margine-box strong{color:var(--ink);font-family:var(--font-mono)}
+.allegati-lista{display:flex;flex-direction:column;gap:7px}
+.allegato-riga{display:flex;align-items:center;gap:9px;border:1px solid var(--bordo);border-radius:var(--r);padding:8px 10px;background:var(--pagina);font-size:13px}
+.allegato-riga svg{width:16px;height:16px;color:var(--rosso);flex:none}
+.allegato-riga span{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #btn-anteprima-mobile{display:none;position:fixed;right:18px;bottom:18px;z-index:45;box-shadow:var(--ombra-su);border-radius:var(--r-pill);padding:13px 20px}
 #anteprima-mobile{display:none;position:fixed;inset:0;z-index:60;background:#fff;flex-direction:column}
 #anteprima-mobile.aperta{display:flex}
@@ -427,6 +441,10 @@ details.blocco-guida .guida{padding:0 16px 14px}
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
           Scarica .html
         </button>
+        <button class="btn btn-secondario" id="btn-esporta-pdf">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V2h9l3 3v4"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          Esporta PDF
+        </button>
         <button class="btn btn-blu" id="btn-pubblica">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M12 12v9"/><path d="m16 16-4-4-4 4"/></svg>
           Pubblica
@@ -469,11 +487,16 @@ details.blocco-guida .guida{padding:0 16px 14px}
             <div class="campo"><label for="e-intro">Testo introduttivo</label><textarea id="e-intro" rows="3"></textarea></div>
             <div class="campo"><label for="e-nota">Nota per il cliente</label><textarea id="e-nota" rows="2" placeholder="Es. Nel prezzo è inclusa la consegna al piano."></textarea></div>
             <div class="campo">
-              <label>Foto ambientate (max 3 — la prima è l'immagine di apertura)</label>
+              <label>Rendering finali (max 3 — mostrati in fondo al preventivo)</label>
               <div class="foto-griglia" id="foto-griglia"></div>
               <input type="file" id="input-foto" accept="image/*" multiple hidden>
             </div>
           </div>
+        </div>
+
+        <div class="pannello" id="pannello-revisioni">
+          <div class="pannello-testata"><h2>Revisioni del preventivo</h2><span class="versione-corrente" id="versione-corrente">V1</span></div>
+          <div class="pannello-corpo"><div class="revisioni-lista" id="revisioni-lista"></div></div>
         </div>
 
         <div class="pannello pannello-voci">
@@ -639,7 +662,7 @@ details.blocco-guida .guida{padding:0 16px 14px}
 
 <!-- ===== Modale: prodotto catalogo ===== -->
 <div class="modale-fondo" id="modale-prodotto">
-  <div class="modale" role="dialog" aria-modal="true" aria-label="Prodotto">
+  <div class="modale" style="max-width:650px" role="dialog" aria-modal="true" aria-label="Prodotto">
     <div class="modale-testata">
       <h2 id="modale-prodotto-titolo">Nuovo prodotto</h2>
       <button class="btn-icona" data-chiudi="modale-prodotto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
@@ -648,12 +671,14 @@ details.blocco-guida .guida{padding:0 16px 14px}
       <div class="campo"><label for="p-nome">Nome prodotto</label><input id="p-nome" type="text"></div>
       <div class="campo"><label for="p-categoria">Categoria</label><select id="p-categoria"></select></div>
       <div class="campo"><label for="p-descrizione">Descrizione breve</label><textarea id="p-descrizione" rows="2"></textarea></div>
-      <div class="griglia g2">
-        <div class="campo"><label for="p-prezzo">Prezzo (IVA esclusa)</label><input id="p-prezzo" type="number" min="0" step="0.01"></div>
+      <div class="griglia g3">
+        <div class="campo"><label for="p-costo">Costo interno</label><input id="p-costo" type="number" min="0" step="0.01"><span class="aiuto">Mai mostrato al cliente.</span></div>
+        <div class="campo"><label for="p-prezzo">Prezzo finale (IVA esclusa)</label><input id="p-prezzo" type="number" min="0" step="0.01"></div>
         <div class="campo"><label for="p-unita">Unità</label>
           <select id="p-unita"><option>pz</option><option>m²</option><option>m</option><option>h</option><option>corpo</option></select>
         </div>
       </div>
+      <div class="margine-box" id="p-margine">Margine interno: <strong>€ 0,00 · 0%</strong></div>
       <div class="campo"><label>Foto</label>
         <div style="display:flex;gap:12px;align-items:center">
           <div class="foto-slot" style="width:130px;height:96px"><img id="p-foto-anteprima" alt=""></div>
@@ -663,6 +688,11 @@ details.blocco-guida .guida{padding:0 16px 14px}
           </div>
         </div>
         <input type="file" id="input-foto-prodotto" accept="image/*" hidden>
+      </div>
+      <div class="campo"><label>Schede PDF — dimensioni, ricambi o istruzioni (max 3, 1,5 MB ciascuna)</label>
+        <div class="allegati-lista" id="p-allegati-lista"></div>
+        <div><button class="btn btn-secondario" id="btn-carica-pdf-prodotto" style="padding:6px 12px;font-size:13px">Allega PDF</button></div>
+        <input type="file" id="input-pdf-prodotto" accept="application/pdf,.pdf" multiple hidden>
       </div>
     </div>
     <div class="modale-piede">
@@ -740,7 +770,16 @@ function dataIT(iso, lunga){
   const d = new Date(iso + (iso.length===10 ? 'T12:00:00' : ''));
   return d.toLocaleDateString('it-IT', lunga ? {day:'numeric',month:'long',year:'numeric'} : {day:'2-digit',month:'2-digit',year:'numeric'});
 }
-function oggiISO(){ return new Date().toISOString().slice(0,10); }
+function oggiISO(){
+  const d = new Date();
+  const locale = new Date(d.getTime() - d.getTimezoneOffset()*60000);
+  return locale.toISOString().slice(0,10);
+}
+function numeroLimitato(valore, minimo, massimo, fallback){
+  const n = Number(valore);
+  if(!Number.isFinite(n)) return fallback;
+  return Math.min(massimo, Math.max(minimo, n));
+}
 function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,8); }
 function suffissoCasuale(){
   const alfa = 'abcdefghjkmnpqrstuvwxyz23456789';
@@ -785,6 +824,14 @@ function compressaImmagine(file, latoMax){
       };
       img.src = lettore.result;
     };
+    lettore.readAsDataURL(file);
+  });
+}
+function leggiFileDataURL(file){
+  return new Promise((ris, rif)=>{
+    const lettore = new FileReader();
+    lettore.onerror = rif;
+    lettore.onload = ()=>ris(lettore.result);
     lettore.readAsDataURL(file);
   });
 }
@@ -877,7 +924,7 @@ function impostazioniDemo(){
 }
 function catalogoDemo(){
   const t = Date.now();
-  const p = (nome, cat, descr, prezzo, unita) => ({ id:uid()+Math.random().toString(36).slice(2,5), nome, categoria:CATEGORIE[cat], descrizione:descr, prezzo, unita, foto:svgProdotto(cat), aggiornatoIl:t });
+  const p = (nome, cat, descr, prezzo, unita) => ({ id:uid()+Math.random().toString(36).slice(2,5), nome, categoria:CATEGORIE[cat], descrizione:descr, costo:0, prezzo, unita, foto:svgProdotto(cat), allegati:[], aggiornatoIl:t });
   return { prodotti:[
     p('Cassetta a incasso Duo 3/6 L', 0, 'Cassetta di risciacquo a incasso con doppio scarico 3/6 litri, telaio autoportante e isolamento anticondensa.', 189.00, 'pz'),
     p('Placca di comando Piana bianca', 0, 'Placca a due tasti in ABS bianco opaco, compatibile con cassetta Duo. Fissaggio a scatto senza viti.', 34.90, 'pz'),
@@ -961,6 +1008,14 @@ function caricaStato(){
     salvaLS();
   }
   if(IMP.azienda && IMP.azienda.sito===undefined) IMP.azienda.sito = '';
+  for(const prodotto of (CAT.prodotti||[])){
+    if(prodotto.costo===undefined) prodotto.costo = 0;
+    if(!Array.isArray(prodotto.allegati)) prodotto.allegati = [];
+  }
+  for(const preventivo of (PREV.preventivi||[])){
+    if(!preventivo.versione) preventivo.versione = 1;
+    if(!Array.isArray(preventivo.revisioni)) preventivo.revisioni = [];
+  }
 }
 
 /* ================================================================
@@ -979,6 +1034,10 @@ function b64decodifica(b64){
   return new TextDecoder().decode(bytes);
 }
 function ghPronto(){ return !!(GH.attivo && GH.token && GH.utente && GH.repoDati); }
+function urlPaginaPubblicata(percorso){
+  const repoSitoUtente = GH.repoPagine.toLowerCase() === (GH.utente+'.github.io').toLowerCase();
+  return 'https://' + GH.utente + '.github.io/' + (repoSitoUtente ? '' : GH.repoPagine + '/') + percorso;
+}
 function ghHeaders(){
   return { 'Authorization':'Bearer '+GH.token, 'Accept':'application/vnd.github+json', 'X-GitHub-Api-Version':'2022-11-28' };
 }
@@ -1171,13 +1230,17 @@ $('#btn-conferma-ok').addEventListener('click', ()=>{
    Calcoli preventivo
 ================================================================ */
 function importoVoce(v){
-  return (Number(v.qta)||0) * (Number(v.prezzo)||0) * (1 - (Number(v.sconto)||0)/100);
+  const qta = numeroLimitato(v.qta, 0, Number.MAX_SAFE_INTEGER, 0);
+  const prezzo = numeroLimitato(v.prezzo, 0, Number.MAX_SAFE_INTEGER, 0);
+  const sconto = numeroLimitato(v.sconto, 0, 100, 0);
+  return qta * prezzo * (1 - sconto/100);
 }
 function totaliPreventivo(p){
-  const totaleVoci = p.voci.reduce((s,v)=>s+importoVoce(v), 0);
-  const sconto = totaleVoci * (Number(p.scontoFinale)||0)/100;
+  const totaleVoci = (p.voci||[]).reduce((s,v)=>s+importoVoce(v), 0);
+  const percentualeSconto = numeroLimitato(p.scontoFinale, 0, 100, 0);
+  const sconto = totaleVoci * percentualeSconto/100;
   const imponibile = totaleVoci - sconto;
-  const iva = imponibile * (Number(p.iva)||0)/100;
+  const iva = imponibile * numeroLimitato(p.iva, 0, 100, 0)/100;
   return { totaleVoci, sconto, imponibile, iva, totale: imponibile+iva };
 }
 function prossimoNumero(){
@@ -1191,7 +1254,7 @@ function prossimoNumero(){
 }
 function scadenzaISO(p){
   const d = new Date((p.data||oggiISO()) + 'T12:00:00');
-  d.setDate(d.getDate() + (Number(p.validita)||0));
+  d.setDate(d.getDate() + numeroLimitato(p.validita, 1, 3650, 1));
   return d.toISOString().slice(0,10);
 }
 
@@ -1214,7 +1277,7 @@ function disegnaArchivio(){
   corpo.innerHTML = lista.map(p=>{
     const t = totaliPreventivo(p);
     return '<tr data-id="'+p.id+'">'
-      + '<td class="cella-numero">'+esc(p.numero)+'</td>'
+      + '<td class="cella-numero">'+esc(p.numero)+'<div class="cella-sub">Versione '+esc(p.versione||1)+'</div></td>'
       + '<td><div class="cella-cliente">'+esc(p.clienteNome||'—')+'</div>'
       + (p.clienteIndirizzo ? '<div class="cella-sub">'+esc(p.clienteIndirizzo)+'</div>' : '') + '</td>'
       + '<td>'+dataIT(p.data)+'</td>'
@@ -1242,6 +1305,7 @@ $('#corpo-archivio').addEventListener('click', e=>{
     copia.stato = 'bozza';
     copia.data = oggiISO();
     copia.pubblicatoUrl = ''; copia.slug = '';
+    copia.versione = 1; copia.revisioni = [];
     copia.voci.forEach(v=>v.id = uid());
     copia.aggiornatoIl = Date.now();
     PREV.preventivi.push(copia);
@@ -1294,9 +1358,10 @@ function disegnaCatalogo(){
     + '<div class="prodotto-info">'
     + '<span class="prodotto-cat">'+esc(p.categoria)+'</span>'
     + '<div class="prodotto-nome">'+esc(p.nome)+'</div>'
-    + '<div class="prodotto-descr">'+esc(p.descrizione||'')+'</div>'
-    + '<div class="prodotto-piede"><span class="prodotto-prezzo">'+euro(p.prezzo)+'</span><span class="prodotto-unita">/ '+esc(p.unita)+'</span></div>'
-    + '</div>'
+     + '<div class="prodotto-descr">'+esc(p.descrizione||'')+'</div>'
+     + '<div class="prodotto-piede"><span class="prodotto-prezzo">'+euro(p.prezzo)+'</span><span class="prodotto-unita">/ '+esc(p.unita)+'</span></div>'
+     + '<div class="prodotto-interno">'+((p.costo||0)>0?'Costo '+euro(p.costo)+' · Margine '+euro((p.prezzo||0)-p.costo):'Costo non impostato')+(p.allegati&&p.allegati.length?' · '+p.allegati.length+' PDF':'')+'</div>'
+     + '</div>'
     + '<div class="prodotto-azioni">'
     + '<button data-azione="modifica">Modifica</button>'
     + '<button data-azione="elimina" class="rossa">Elimina</button>'
@@ -1324,26 +1389,46 @@ $('#griglia-catalogo').addEventListener('click', e=>{
 /* Modale prodotto */
 let prodottoInModifica = null;
 let fotoProdottoTemp = '';
+let allegatiProdottoTemp = [];
 function apriModaleProdotto(p){
   prodottoInModifica = p || null;
   fotoProdottoTemp = p ? (p.foto||'') : '';
+  allegatiProdottoTemp = p ? JSON.parse(JSON.stringify(p.allegati||[])) : [];
   $('#modale-prodotto-titolo').textContent = p ? 'Modifica prodotto' : 'Nuovo prodotto';
   $('#p-nome').value = p ? p.nome : '';
   const sel = $('#p-categoria');
   sel.innerHTML = CATEGORIE.map(c=>'<option>'+esc(c)+'</option>').join('');
   sel.value = p ? p.categoria : (filtroCategoria || CATEGORIE[0]);
   $('#p-descrizione').value = p ? (p.descrizione||'') : '';
+  $('#p-costo').value = p ? (p.costo||'') : '';
   $('#p-prezzo').value = p ? p.prezzo : '';
   $('#p-unita').value = p ? p.unita : 'pz';
   aggiornaFotoProdottoUI();
+  aggiornaMargineProdottoUI();
+  disegnaAllegatiProdottoUI();
   apriModale('modale-prodotto');
   $('#p-nome').focus();
+}
+function aggiornaMargineProdottoUI(){
+  const costo = numeroLimitato($('#p-costo').value, 0, Number.MAX_SAFE_INTEGER, 0);
+  const prezzo = numeroLimitato($('#p-prezzo').value, 0, Number.MAX_SAFE_INTEGER, 0);
+  const margine = prezzo - costo;
+  const percentuale = prezzo > 0 ? margine/prezzo*100 : 0;
+  $('#p-margine').innerHTML = 'Margine interno: <strong>'+euro(margine)+' · '+percentuale.toFixed(1).replace('.',',')+'%</strong>';
+}
+function disegnaAllegatiProdottoUI(){
+  const lista = $('#p-allegati-lista');
+  lista.innerHTML = allegatiProdottoTemp.length ? allegatiProdottoTemp.map((a,i)=>
+    '<div class="allegato-riga"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span>'+esc(a.nome)+'</span><button class="btn-pericolo-fantasma" data-rimuovi-pdf="'+i+'" type="button">Rimuovi</button></div>'
+  ).join('') : '<span class="aiuto">Nessuna scheda PDF allegata.</span>';
 }
 function aggiornaFotoProdottoUI(){
   const img = $('#p-foto-anteprima');
   img.src = fotoProdottoTemp || svgProdotto(CATEGORIE.indexOf($('#p-categoria').value));
 }
 $('#p-categoria').addEventListener('change', aggiornaFotoProdottoUI);
+$('#p-costo').addEventListener('input', aggiornaMargineProdottoUI);
+$('#p-prezzo').addEventListener('input', aggiornaMargineProdottoUI);
 $('#btn-nuovo-prodotto').addEventListener('click', ()=>apriModaleProdotto(null));
 $('#btn-carica-foto-prodotto').addEventListener('click', ()=>$('#input-foto-prodotto').click());
 $('#btn-rimuovi-foto-prodotto').addEventListener('click', ()=>{ fotoProdottoTemp=''; aggiornaFotoProdottoUI(); });
@@ -1356,18 +1441,42 @@ $('#input-foto-prodotto').addEventListener('change', async e=>{
     aggiornaFotoProdottoUI();
   }catch(err){ toast('Immagine non leggibile', 'errore'); }
 });
+$('#btn-carica-pdf-prodotto').addEventListener('click', ()=>$('#input-pdf-prodotto').click());
+$('#p-allegati-lista').addEventListener('click', e=>{
+  const bottone = e.target.closest('[data-rimuovi-pdf]');
+  if(!bottone) return;
+  allegatiProdottoTemp.splice(Number(bottone.dataset.rimuoviPdf), 1);
+  disegnaAllegatiProdottoUI();
+});
+$('#input-pdf-prodotto').addEventListener('change', async e=>{
+  const files = [...e.target.files];
+  e.target.value = '';
+  for(const file of files){
+    if(allegatiProdottoTemp.length>=3){ toast('Puoi allegare al massimo 3 PDF', 'errore'); break; }
+    if(file.type!=='application/pdf' && !file.name.toLowerCase().endsWith('.pdf')){ toast(file.name+': formato non valido', 'errore'); continue; }
+    if(file.size>1.5*1024*1024){ toast(file.name+': supera 1,5 MB', 'errore'); continue; }
+    try{
+      allegatiProdottoTemp.push({ id:uid(), nome:file.name, dati:await leggiFileDataURL(file) });
+    }catch(err){ toast(file.name+': PDF non leggibile', 'errore'); }
+  }
+  disegnaAllegatiProdottoUI();
+});
 $('#btn-salva-prodotto').addEventListener('click', ()=>{
   const nome = $('#p-nome').value.trim();
+  const costo = Number($('#p-costo').value||0);
   const prezzo = Number($('#p-prezzo').value);
   if(!nome){ toast('Inserisci il nome del prodotto', 'errore'); return; }
+  if(!(costo>=0)){ toast('Inserisci un costo interno valido', 'errore'); return; }
   if(!(prezzo>=0)){ toast('Inserisci un prezzo valido', 'errore'); return; }
   const dati = {
     nome,
     categoria: $('#p-categoria').value,
     descrizione: $('#p-descrizione').value.trim(),
+    costo,
     prezzo,
     unita: $('#p-unita').value,
     foto: fotoProdottoTemp || svgProdotto(CATEGORIE.indexOf($('#p-categoria').value)),
+    allegati: allegatiProdottoTemp,
     aggiornatoIl: Date.now()
   };
   if(prodottoInModifica) Object.assign(prodottoInModifica, dati);
@@ -1385,9 +1494,55 @@ $('#btn-salva-prodotto').addEventListener('click', ()=>{
 let Q = null; // preventivo in modifica (riferimento diretto o nuovo oggetto)
 let nuovoNonSalvato = false;
 
+function contenutoVersionabile(p){
+  const copia = JSON.parse(JSON.stringify(p||{}));
+  for(const chiave of ['aggiornatoIl','pubblicatoUrl','slug','stato','versione','revisioni']) delete copia[chiave];
+  return copia;
+}
+function descriviDifferenzePreventivo(prima, dopo){
+  const modifiche = [];
+  const campi = {
+    clienteNome:'Cliente', clienteTelefono:'Telefono', clienteEmail:'Email', clienteIndirizzo:'Indirizzo',
+    venditore:'Venditore', data:'Data', validita:'Validità', iva:'IVA', scontoFinale:'Sconto finale',
+    titolo:'Titolo', intro:'Introduzione', nota:'Nota per il cliente'
+  };
+  for(const [chiave, etichetta] of Object.entries(campi)){
+    if(String(prima[chiave]??'')!==String(dopo[chiave]??'')) modifiche.push('Modifica: '+etichetta);
+  }
+  const vecchie = new Map((prima.voci||[]).map(v=>[v.id,v]));
+  const nuove = new Map((dopo.voci||[]).map(v=>[v.id,v]));
+  for(const [id, voce] of nuove){
+    if(!vecchie.has(id)){ modifiche.push('Aggiunto: '+(voce.descrizione||'voce senza nome')); continue; }
+    const precedente = vecchie.get(id);
+    const dettagli = [];
+    if(String(precedente.descrizione||'')!==String(voce.descrizione||'')) dettagli.push('descrizione');
+    if(Number(precedente.qta)!==Number(voce.qta) || precedente.unita!==voce.unita) dettagli.push('quantità');
+    if(Number(precedente.prezzo)!==Number(voce.prezzo)) dettagli.push('prezzo');
+    if(Number(precedente.sconto||0)!==Number(voce.sconto||0)) dettagli.push('sconto');
+    if(precedente.categoria!==voce.categoria) dettagli.push('categoria');
+    if(dettagli.length) modifiche.push((voce.descrizione||'Voce')+': '+dettagli.join(', ')+' modificati');
+  }
+  for(const [id, voce] of vecchie){
+    if(!nuove.has(id)) modifiche.push('Rimosso: '+(voce.descrizione||'voce senza nome'));
+  }
+  if(JSON.stringify(prima.foto||[])!==JSON.stringify(dopo.foto||[])) modifiche.push('Rendering aggiornati');
+  return modifiche.length ? modifiche : ['Contenuto del preventivo aggiornato'];
+}
+function disegnaRevisioni(){
+  const versione = Q.versione||1;
+  $('#versione-corrente').textContent = 'V'+versione;
+  const revisioni = [...(Q.revisioni||[])].sort((a,b)=>(b.versione||0)-(a.versione||0));
+  $('#revisioni-lista').innerHTML = revisioni.length ? revisioni.map(r=>
+    '<details class="revisione-riga"'+(r===revisioni[0]?' open':'')+'><summary>Versione '+esc(r.versione)+'<time>'+esc(new Date(r.creataIl).toLocaleString('it-IT',{dateStyle:'short',timeStyle:'short'}))+'</time></summary><ul>'
+    + (r.modifiche||[]).map(m=>'<li>'+esc(m)+'</li>').join('')+'</ul></details>'
+  ).join('') : '<span style="font-size:13px;color:var(--muted)">Versione iniziale. Le modifiche future saranno elencate qui.</span>';
+}
+
 function apriEditor(id){
   if(id){
-    Q = PREV.preventivi.find(p=>p.id===id);
+    const salvato = PREV.preventivi.find(p=>p.id===id);
+    if(!salvato) return;
+    Q = JSON.parse(JSON.stringify(salvato));
     nuovoNonSalvato = false;
   } else {
     Q = {
@@ -1397,6 +1552,7 @@ function apriEditor(id){
       validita: IMP.default.validita, iva: IMP.default.iva, scontoFinale: 0,
       titolo:'', intro:'', nota:'', foto:[], voci:[],
       stato:'bozza', pubblicatoUrl:'', slug:'',
+      versione:1, revisioni:[],
       aggiornatoIl: Date.now()
     };
     nuovoNonSalvato = true;
@@ -1430,6 +1586,7 @@ function riempiEditor(){
   disegnaFotoEditor();
   disegnaVoci();
   disegnaTotali();
+  disegnaRevisioni();
 }
 function titoloPredefinito(){
   const nome = (Q.clienteNome||'').trim().split(/\s+/)[0] || 'casa tua';
@@ -1455,17 +1612,16 @@ for(const [idc, prop] of campiEditor){
     programmaAnteprima();
   });
 }
-$('#e-validita').addEventListener('input', e=>{ Q.validita = Number(e.target.value)||0; programmaAnteprima(); });
+$('#e-validita').addEventListener('input', e=>{ Q.validita = numeroLimitato(e.target.value, 1, 3650, 1); programmaAnteprima(); });
 $('#e-iva').addEventListener('change', e=>{ Q.iva = Number(e.target.value); disegnaTotali(); programmaAnteprima(); });
-$('#e-sconto').addEventListener('input', e=>{ Q.scontoFinale = Number(e.target.value)||0; disegnaTotali(); programmaAnteprima(); });
+$('#e-sconto').addEventListener('input', e=>{ Q.scontoFinale = numeroLimitato(e.target.value, 0, 100, 0); disegnaTotali(); programmaAnteprima(); });
 $('#e-stato').addEventListener('change', e=>{ Q.stato = e.target.value; aggiornaBadgeEditor(); });
 
-/* Foto ambientate */
+/* Rendering finali */
 function disegnaFotoEditor(){
   const cont = $('#foto-griglia');
   cont.innerHTML = Q.foto.map((f,i)=>
     '<div class="foto-slot"><img src="'+esc(f)+'" alt="Foto '+(i+1)+'">'
-    + (i===0 ? '<span class="tag-hero">Apertura</span>' : '')
     + '<button class="rimuovi" data-i="'+i+'" title="Rimuovi foto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>'
   ).join('')
   + (Q.foto.length<3
@@ -1517,7 +1673,8 @@ $('#voci-lista').addEventListener('input', e=>{
   const campo = e.target.dataset.campo;
   if(!riga || !campo) return;
   const v = Q.voci[Number(riga.dataset.i)];
-  if(campo==='qta'||campo==='prezzo'||campo==='sconto') v[campo] = Number(e.target.value)||0;
+  if(campo==='qta'||campo==='prezzo') v[campo] = numeroLimitato(e.target.value, 0, Number.MAX_SAFE_INTEGER, 0);
+  else if(campo==='sconto') v[campo] = numeroLimitato(e.target.value, 0, 100, 0);
   else v[campo] = e.target.value;
   riga.querySelector('.voce-importo').textContent = euro(importoVoce(v));
   disegnaTotali();
@@ -1607,11 +1764,31 @@ $('#btn-torna-archivio').addEventListener('click', ()=>mostraVista('archivio'));
 /* Salvataggio */
 function salvaPreventivo(silenzioso){
   if(!Q.titolo) Q.titolo = '';
-  Q.aggiornatoIl = Date.now();
-  if(nuovoNonSalvato){
-    PREV.preventivi.push(Q);
-    nuovoNonSalvato = false;
+  const indice = PREV.preventivi.findIndex(p=>p.id===Q.id);
+  const ora = Date.now();
+  if(indice===-1){
+    Q.versione = 1;
+    Q.revisioni = [];
+  }else{
+    const precedente = PREV.preventivi[indice];
+    if(JSON.stringify(contenutoVersionabile(precedente))!==JSON.stringify(contenutoVersionabile(Q))){
+      Q.versione = (precedente.versione||1)+1;
+      Q.revisioni = [...(precedente.revisioni||[]), {
+        versione:Q.versione,
+        creataIl:new Date(ora).toISOString(),
+        modifiche:descriviDifferenzePreventivo(precedente,Q)
+      }];
+    }else{
+      Q.versione = precedente.versione||1;
+      Q.revisioni = JSON.parse(JSON.stringify(precedente.revisioni||[]));
+    }
   }
+  Q.aggiornatoIl = ora;
+  const copia = JSON.parse(JSON.stringify(Q));
+  if(indice===-1) PREV.preventivi.push(copia);
+  else PREV.preventivi[indice] = copia;
+  nuovoNonSalvato = false;
+  disegnaRevisioni();
   salvaEsincronizza();
   if(!silenzioso) toast('Preventivo '+Q.numero+' salvato');
 }
@@ -1619,15 +1796,37 @@ $('#btn-salva').addEventListener('click', ()=>salvaPreventivo(false));
 
 /* Scarica .html */
 $('#btn-scarica-html').addEventListener('click', ()=>{
+  salvaPreventivo(true);
   const html = paginaCliente(Q, IMP);
   const blob = new Blob([html], { type:'text/html;charset=utf-8' });
   const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'preventivo-'+Q.numero.toLowerCase()+'.html';
-  a.click();
-  URL.revokeObjectURL(a.href);
-  salvaPreventivo(true);
+    a.href = URL.createObjectURL(blob);
+    a.download = 'preventivo-'+Q.numero.toLowerCase()+'.html';
+    a.click();
+    setTimeout(()=>URL.revokeObjectURL(a.href), 1000);
   toast('Pagina scaricata: inviala al cliente come allegato');
+});
+
+/* Esporta PDF tramite il layout di stampa A4 del browser */
+$('#btn-esporta-pdf').addEventListener('click', ()=>{
+  salvaPreventivo(true);
+  const iframe = document.createElement('iframe');
+  iframe.setAttribute('aria-hidden','true');
+  iframe.style.position = 'fixed';
+  iframe.style.width = '1px'; iframe.style.height = '1px';
+  iframe.style.right = '0'; iframe.style.bottom = '0'; iframe.style.opacity = '0';
+  iframe.onload = ()=>setTimeout(()=>{
+    try{
+      iframe.contentWindow.focus();
+      iframe.contentWindow.print();
+      toast('Nel pannello di stampa scegli “Salva come PDF”');
+    }catch(e){
+      toast('Impossibile aprire l’esportazione PDF', 'errore');
+    }
+    setTimeout(()=>iframe.remove(), 60000);
+  }, 500);
+  iframe.srcdoc = paginaCliente(Q, IMP);
+  document.body.appendChild(iframe);
 });
 
 /* Pubblica su GitHub Pages */
@@ -1639,6 +1838,7 @@ $('#btn-pubblica').addEventListener('click', async ()=>{
   const bottone = $('#btn-pubblica');
   bottone.disabled = true;
   try{
+    salvaPreventivo(true);
     if(!Q.slug) Q.slug = Q.numero.toLowerCase() + '-' + suffissoCasuale();
     const percorso = 'p/' + Q.slug + '.html';
     const html = paginaCliente(Q, IMP);
@@ -1646,7 +1846,7 @@ $('#btn-pubblica').addEventListener('click', async ()=>{
       const remoto = await ghLeggi(GH.repoPagine, percorso);
       await ghScrivi(GH.repoPagine, percorso, html, remoto && remoto.sha, 'Pubblica preventivo '+Q.numero);
     });
-    Q.pubblicatoUrl = 'https://' + GH.utente + '.github.io/' + GH.repoPagine + '/' + percorso;
+    Q.pubblicatoUrl = urlPaginaPubblicata(percorso);
     if(Q.stato==='bozza'){ Q.stato = 'inviato'; $('#e-stato').value = 'inviato'; aggiornaBadgeEditor(); }
     salvaPreventivo(true);
     $('#link-pubblicato').value = Q.pubblicatoUrl;
@@ -1681,16 +1881,16 @@ function paginaCliente(p, imp){
   const condizioni = imp.default.condizioni;
   const scadenza = dataIT(scadenzaISO(p), true);
   const t = totaliPreventivo(p);
-  const eyebrow = 'Preventivo ' + p.numero + ' · ' + dataIT(p.data, true);
-  const conFoto = p.foto && p.foto.length > 0;
-  const fotoExtra = conFoto ? p.foto.slice(1) : [];
-  const mostraSconto = p.voci.some(v=>(Number(v.sconto)||0) > 0);
-  const nCol = mostraSconto ? 5 : 4;
+  const eyebrow = 'Preventivo ' + p.numero + ' · revisione V' + (p.versione||1) + ' · ' + dataIT(p.data, true);
+  const rendering = Array.isArray(p.foto) ? p.foto : [];
+  const vociPreventivo = Array.isArray(p.voci) ? p.voci : [];
+  const mostraSconto = vociPreventivo.some(v=>(Number(v.sconto)||0) > 0);
+  const nCol = mostraSconto ? 6 : 5;
 
   /* prodotti unici del preventivo con foto, per "La tua selezione" */
   const visti = new Set();
   const selezione = [];
-  for(const v of p.voci){
+  for(const v of vociPreventivo){
     if(!v.prodottoId || visti.has(v.prodottoId)) continue;
     visti.add(v.prodottoId);
     const pr = CAT.prodotti.find(x=>x.id===v.prodottoId);
@@ -1700,31 +1900,23 @@ function paginaCliente(p, imp){
   /* righe tabella raggruppate nelle cinque categorie, ordine fisso */
   let righe = '';
   for(const cat of CATEGORIE){
-    const voci = p.voci.filter(v=>v.categoria===cat);
+    const voci = vociPreventivo.filter(v=>v.categoria===cat);
     if(!voci.length) continue;
     righe += '<tr class="cat-riga"><td colspan="'+nCol+'"><span>'+esc(cat)+'</span></td></tr>';
     for(const v of voci){
       const qta = String(v.qta).replace('.',',') + '&nbsp;' + esc(v.unita);
-      righe += '<tr>'
+      righe += '<tr class="riga-scelta" data-importo="'+importoVoce(v)+'" data-descrizione="'+esc(v.descrizione)+'">'
         + '<td class="descr">'+esc(v.descrizione)+'</td>'
         + '<td class="num qta">'+qta+'</td>'
         + '<td class="num">'+euro(v.prezzo)+'</td>'
         + (mostraSconto ? '<td class="num sconto">'+((Number(v.sconto)||0)>0 ? pct(v.sconto) : '')+'</td>' : '')
         + '<td class="num importo">'+euro(importoVoce(v))+'</td>'
+        + '<td class="scelta"><label class="scelta-articolo"><input type="checkbox" class="articolo-check" checked><span>Incluso</span></label></td>'
         + '</tr>';
     }
   }
 
-  const heroFoto = conFoto ?
-    '<header class="hero">'
-    + '<img src="'+esc(p.foto[0])+'" alt="">'
-    + '<div class="hero-pannello">'
-    + '<p class="eyebrow">'+esc(eyebrow)+'</p>'
-    + '<h1>'+esc(titolo)+'</h1>'
-    + '<p class="firma">Preparato da '+esc(p.venditore||'')+' · '+esc(az.nome)+'</p>'
-    + '</div></header>'
-    :
-    '<header class="hero-scuro">'
+  const hero = '<header class="hero-scuro">'
     + '<div class="hero-scuro-interno">'
     + '<div class="filo-rosso"></div>'
     + '<p class="eyebrow">'+esc(eyebrow)+'</p>'
@@ -1732,8 +1924,8 @@ function paginaCliente(p, imp){
     + '<p class="firma">Preparato da '+esc(p.venditore||'')+' · '+esc(az.nome)+'</p>'
     + '</div></header>';
 
-  const galleriaExtra = fotoExtra.length
-    ? '<div class="griglia-foto reveal">' + fotoExtra.map(f=>'<img src="'+esc(f)+'" alt="" loading="lazy">').join('') + '</div>'
+  const galleriaRendering = rendering.length
+    ? '<section class="sezione sezione-rendering reveal"><p class="eyebrow accent">Il risultato</p><h2>Rendering del progetto</h2><div class="griglia-foto">' + rendering.map(f=>'<img src="'+esc(f)+'" alt="Rendering del progetto" loading="lazy">').join('') + '</div></section>'
     : '';
 
   const blocchoSelezione = selezione.length
@@ -1745,6 +1937,7 @@ function paginaCliente(p, imp){
           + '<img src="'+esc(pr.foto)+'" alt="'+esc(pr.nome)+'" loading="lazy">'
           + '<figcaption><strong>'+esc(pr.nome)+'</strong>'
           + (pr.descrizione ? '<span>'+esc(pr.descrizione)+'</span>' : '')
+          + ((pr.allegati||[]).length ? '<div class="documenti-prodotto">'+pr.allegati.map(a=>'<a href="'+esc(a.dati)+'" download="'+esc(a.nome)+'">PDF · '+esc(a.nome)+'</a>').join('')+'</div>' : '')
           + '</figcaption></figure>'
         ).join('')
       + '</div></section>'
@@ -1755,20 +1948,21 @@ function paginaCliente(p, imp){
     : '';
 
   const waNumero = (az.whatsapp||'').replace(/\D/g,'');
-  const waMsg = encodeURIComponent('Ciao! Ho visto il preventivo '+p.numero+' e vorrei parlarne con voi.');
+  const waMsg = encodeURIComponent('Ciao! Ho visto il preventivo '+p.numero+' (V'+(p.versione||1)+') e vorrei parlarne con voi.');
   const telHref = 'tel:' + (az.telefono||'').replace(/[^\d+]/g,'');
   const mailHref = 'mailto:' + (az.email||'') + '?subject=' + encodeURIComponent('Preventivo '+p.numero);
 
   const marchioFooter = az.logo
     ? '<img class="logo" src="'+esc(az.logo)+'" alt="'+esc(az.nome)+'">'
     : '<span class="wordmark">schläfer</span>';
+  const logoStampa = az.logo || logoSchlaefer();
 
   const righeRiepilogo =
-    '<div class="rie-riga"><span>Totale voci</span><span class="val">'+euro(t.totaleVoci)+'</span></div>'
-    + (t.sconto>0 ? '<div class="rie-riga"><span>Sconto riservato '+pct(p.scontoFinale)+'</span><span class="val rosso">−'+euro(t.sconto).replace('−','')+'</span></div>' : '')
-    + '<div class="rie-riga"><span>Imponibile</span><span class="val">'+euro(t.imponibile)+'</span></div>'
-    + '<div class="rie-riga"><span>IVA '+p.iva+'%</span><span class="val">'+euro(t.iva)+'</span></div>'
-    + '<div class="rie-riga totale"><span>Totale</span><span class="val">'+euro(t.totale)+'</span></div>';
+    '<div class="rie-riga"><span>Totale articoli scelti</span><span class="val" id="scelta-totale-voci">'+euro(t.totaleVoci)+'</span></div>'
+    + (t.sconto>0 ? '<div class="rie-riga"><span>Sconto riservato '+pct(p.scontoFinale)+'</span><span class="val rosso" id="scelta-sconto">−'+euro(t.sconto).replace('−','')+'</span></div>' : '')
+    + '<div class="rie-riga"><span>Imponibile</span><span class="val" id="scelta-imponibile">'+euro(t.imponibile)+'</span></div>'
+    + '<div class="rie-riga"><span>IVA '+p.iva+'%</span><span class="val" id="scelta-iva">'+euro(t.iva)+'</span></div>'
+    + '<div class="rie-riga totale"><span>Totale scelto</span><span class="val" id="scelta-totale">'+euro(t.totale)+'</span></div>';
 
   return '<!DOCTYPE html>\n<html lang="it">\n<head>\n'
 + '<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1.0">\n'
@@ -1807,8 +2001,10 @@ function paginaCliente(p, imp){
 + '.selezione-card figcaption{padding:13px 15px 15px}\n'
 + '.selezione-card strong{display:block;font-size:15px;font-weight:700;color:var(--ink);line-height:1.3}\n'
 + '.selezione-card span{display:block;font-size:13px;color:var(--muted);line-height:1.5;margin-top:4px}\n'
++ '.documenti-prodotto{display:flex;flex-direction:column;gap:5px;margin-top:10px;padding-top:9px;border-top:1px solid var(--bordo)}\n'
++ '.documenti-prodotto a{font-size:12px;color:var(--blu);text-decoration:none;overflow-wrap:anywhere}\n'
 + '.tab-wrap{border:1px solid var(--bordo);border-radius:10px;overflow-x:auto;background:#fff;box-shadow:0 1px 2px rgba(44,50,49,.05),0 4px 14px rgba(44,50,49,.06)}\n'
-+ 'table{width:100%;border-collapse:collapse;min-width:560px}\n'
++ 'table{width:100%;border-collapse:collapse;min-width:680px}\n'
 + 'th{font-family:"Barlow Semi Condensed",sans-serif;font-weight:600;font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);text-align:left;padding:13px 16px;border-bottom:1px solid var(--bordo);white-space:nowrap}\n'
 + 'td{padding:12px 16px;border-bottom:1px solid var(--bordo);vertical-align:top;font-size:15px}\n'
 + 'tr:last-child td{border-bottom:none}\n'
@@ -1818,6 +2014,11 @@ function paginaCliente(p, imp){
 + 'td.sconto{color:var(--rosso)}\n'
 + 'td.importo{font-weight:600;color:var(--ink)}\n'
 + 'td.descr{font-weight:500;color:var(--ink)}\n'
++ 'td.scelta{width:104px;text-align:center}\n'
++ '.scelta-articolo{display:inline-flex;align-items:center;gap:6px;cursor:pointer;font-size:12px;font-weight:700;color:#2A9358;white-space:nowrap}\n'
++ '.scelta-articolo input{accent-color:#2A9358;width:16px;height:16px}\n'
++ '.riga-scelta.esclusa td:not(.scelta){opacity:.42;text-decoration:line-through}\n'
++ '.riga-scelta.esclusa .scelta-articolo{color:var(--rosso)}\n'
 + '.cat-riga td{background:var(--pagina);border-bottom:1px solid var(--bordo);padding:9px 16px}\n'
 + '.cat-riga span{font-family:"Barlow Semi Condensed",sans-serif;font-weight:700;font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink);border-left:3px solid var(--rosso);padding-left:9px}\n'
 + '.riepilogo{margin-left:auto;max-width:360px;padding:22px 0 0;display:flex;flex-direction:column;gap:9px}\n'
@@ -1832,6 +2033,14 @@ function paginaCliente(p, imp){
 + '.nota{margin-top:30px;background:var(--pagina);border:1px solid var(--bordo);border-left:3px solid var(--rosso);border-radius:10px;padding:20px 24px}\n'
 + '.nota p:last-child{margin-top:6px;font-size:15.5px;color:var(--ink)}\n'
 + '.condizioni{margin-top:34px;font-size:12.5px;color:var(--muted);line-height:1.65;max-width:56em}\n'
++ '.scelte-box{margin-top:26px;border:1px solid var(--bordo);border-left:4px solid var(--blu);border-radius:10px;padding:18px 20px;background:#F5FAFD}\n'
++ '.scelte-box h3{font-size:18px;color:var(--ink);margin-bottom:5px}\n'
++ '.scelte-box p{font-size:14px;color:var(--muted)}\n'
++ '.scelte-comandi{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}\n'
++ '.btn-scelta{border:1px solid var(--bordo);background:#fff;color:var(--ink);border-radius:7px;padding:9px 14px;font-weight:700;font-size:13px;cursor:pointer}\n'
++ '.btn-scelta:hover{border-color:var(--blu);color:var(--blu)}\n'
++ '.btn-invia{background:var(--blu);border-color:var(--blu);color:#fff;text-decoration:none}\n'
++ '.stampa-testata{display:none}\n'
 + '.cta{background:var(--rosso);color:#fff;margin-top:clamp(48px,7vw,80px)}\n'
 + '.cta-interno{max-width:980px;margin:0 auto;padding:clamp(44px,6vw,68px) 24px;text-align:center}\n'
 + '.cta h2{color:#fff;font-size:clamp(26px,4vw,38px);margin:0 0 10px}\n'
@@ -1853,37 +2062,50 @@ function paginaCliente(p, imp){
 + '.reveal.vista{opacity:1;transform:none}\n'
 + '@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}\n'
 + '@media (max-width:640px){.hero{height:52vh;min-height:360px}.hero-pannello{left:14px;right:14px;bottom:14px;max-width:none}}\n'
++ '@page{size:A4;margin:14mm 13mm 16mm}\n'
 + '@media print{\n'
-+ '  body{background:#fff;font-size:12.5px}\n'
++ '  body{background:#fff;font-size:10.5pt;color:#222}\n'
++ '  .stampa-testata{display:flex;align-items:center;justify-content:space-between;gap:12mm;padding-bottom:5mm;border-bottom:1px solid #bbb}\n'
++ '  .stampa-testata img{width:42mm;max-height:20mm;object-fit:contain}\n'
++ '  .stampa-dati{text-align:right;font-size:9pt;color:#555}\n'
 + '  .hero{height:auto;min-height:0}.hero img{max-height:56mm;object-fit:cover}\n'
 + '  .hero-pannello{position:static;box-shadow:none;margin:6mm 0 0;max-width:none}\n'
-+ '  .hero-scuro{-webkit-print-color-adjust:exact;print-color-adjust:exact}\n'
++ '  .hero-scuro{background:#fff;color:#222;padding:9mm 0 5mm;border-bottom:2px solid var(--rosso)}\n'
++ '  .hero-scuro-interno,main{max-width:none;padding:0}\n'
++ '  .hero-scuro h1{color:#222;font-size:25pt}.hero-scuro .firma,.hero-scuro .eyebrow{color:#555}.filo-rosso{display:none}\n'
 + '  .cta{display:none}\n'
++ '  .scelte-comandi{display:none}\n'
 + '  .reveal{opacity:1!important;transform:none!important;transition:none!important}\n'
-+ '  .sezione{padding-top:9mm}\n'
++ '  .sezione{padding-top:7mm}\n'
++ '  .sezione-rendering{break-before:page}\n'
++ '  .griglia-foto img{height:60mm}\n'
 + '  .tab-wrap,.selezione-card,.nota{box-shadow:none}\n'
-+ '  tr,figure{break-inside:avoid}\n'
++ '  tr,figure,.scelte-box,.griglia-foto img{break-inside:avoid}\n'
++ '  footer{background:#fff;color:#555;border-top:1px solid #bbb;margin-top:8mm}footer .logo{filter:none}footer a{color:#555}\n'
 + '  a{text-decoration:none;color:inherit}\n'
 + '}\n'
 + '</style>\n</head>\n<body>\n'
-+ heroFoto
++ '<div class="stampa-testata"><img src="'+esc(logoStampa)+'" alt="schläfer"><div class="stampa-dati"><strong>'+esc(az.nome)+'</strong><br>'+esc(az.indirizzo||'')+'<br>'+esc(az.telefono||'')+'</div></div>'
++ hero
 + '<main>'
 + '<section class="sezione reveal"><p class="eyebrow accent">La proposta</p><h2>Pensata su misura per te</h2>'
 + '<p class="intro-testo">'+escBr(intro)+'</p>'
-+ galleriaExtra
++ notaBlocco
 + '</section>'
 + blocchoSelezione
 + '<section class="sezione reveal"><p class="eyebrow accent">Il preventivo nel dettaglio</p>'
 + '<h2>Voci e importi</h2>'
 + '<div class="tab-wrap"><table>'
-+ '<thead><tr><th>Descrizione</th><th class="num">Q.tà</th><th class="num">Prezzo</th>'+(mostraSconto?'<th class="num">Sconto</th>':'')+'<th class="num">Importo</th></tr></thead>'
++ '<thead><tr><th>Descrizione</th><th class="num">Q.tà</th><th class="num">Prezzo IVA escl.</th>'+(mostraSconto?'<th class="num">Sconto</th>':'')+'<th class="num">Importo</th><th class="num">Scelta</th></tr></thead>'
 + '<tbody>'+righe+'</tbody>'
 + '</table></div>'
 + '<div class="riepilogo">'+righeRiepilogo+'</div>'
++ '<div class="scelte-box"><h3>Scegli gli articoli che vuoi confermare</h3><p>Puoi includere o escludere ogni voce. Il totale si aggiorna automaticamente; poi invia la selezione al venditore.</p><div class="scelte-comandi"><button class="btn-scelta" id="scegli-tutti" type="button">Accetta tutti</button><button class="btn-scelta" id="scegli-nessuno" type="button">Rifiuta tutti</button>'
++ (waNumero?'<a class="btn-scelta btn-invia" id="invia-scelte" href="#">Invia le scelte su WhatsApp</a>':'')+'</div></div>'
 + '<p class="validita"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Offerta valida fino al '+esc(scadenza)+'.</p>'
-+ notaBlocco
 + '<p class="condizioni">'+escBr(condizioni)+'</p>'
 + '</section>'
++ galleriaRendering
 + '</main>'
 + '<section class="cta"><div class="cta-interno reveal">'
 + '<h2>Ti convince questa proposta?</h2>'
@@ -1902,6 +2124,21 @@ function paginaCliente(p, imp){
 + '</div>'
 + '</div></footer>'
 + '<script>\n'
++ 'var percentualeSconto='+JSON.stringify(numeroLimitato(p.scontoFinale,0,100,0))+', aliquotaIva='+JSON.stringify(numeroLimitato(p.iva,0,100,0))+';\n'
++ 'function euroScelta(n){var parti=(Math.round((n||0)*100)/100).toFixed(2).split(".");return "€ "+parti[0].replace(/\\B(?=(\\d{3})+(?!\\d))/g,".")+","+parti[1];}\n'
++ 'function aggiornaScelte(){\n'
++ '  var righe=Array.from(document.querySelectorAll(".riga-scelta")), totaleVoci=0, accettati=[], rifiutati=[];\n'
++ '  righe.forEach(function(riga){var check=riga.querySelector(".articolo-check"), incluso=check.checked, nome=riga.dataset.descrizione||"Articolo";riga.classList.toggle("esclusa",!incluso);check.nextElementSibling.textContent=incluso?"Incluso":"Escluso";if(incluso){totaleVoci+=Number(riga.dataset.importo)||0;accettati.push(nome);}else{rifiutati.push(nome);}});\n'
++ '  var sconto=totaleVoci*percentualeSconto/100, imponibile=totaleVoci-sconto, iva=imponibile*aliquotaIva/100, totale=imponibile+iva;\n'
++ '  document.getElementById("scelta-totale-voci").textContent=euroScelta(totaleVoci);\n'
++ '  var elSconto=document.getElementById("scelta-sconto");if(elSconto)elSconto.textContent="−"+euroScelta(sconto);\n'
++ '  document.getElementById("scelta-imponibile").textContent=euroScelta(imponibile);document.getElementById("scelta-iva").textContent=euroScelta(iva);document.getElementById("scelta-totale").textContent=euroScelta(totale);\n'
++ '  var invia=document.getElementById("invia-scelte");if(invia){var msg="Ciao! Ecco le mie scelte per il preventivo '+esc(p.numero)+' (V'+esc(p.versione||1)+').\\n\\nArticoli accettati:\\n"+(accettati.length?accettati.map(function(x){return "- "+x;}).join("\\n"):"- Nessuno")+"\\n\\nArticoli rifiutati:\\n"+(rifiutati.length?rifiutati.map(function(x){return "- "+x;}).join("\\n"):"- Nessuno")+"\\n\\nTotale IVA inclusa: "+euroScelta(totale);invia.href="https://wa.me/'+waNumero+'?text="+encodeURIComponent(msg);}\n'
++ '}\n'
++ 'document.querySelectorAll(".articolo-check").forEach(function(c){c.addEventListener("change",aggiornaScelte);});\n'
++ 'document.getElementById("scegli-tutti").addEventListener("click",function(){document.querySelectorAll(".articolo-check").forEach(function(c){c.checked=true;});aggiornaScelte();});\n'
++ 'document.getElementById("scegli-nessuno").addEventListener("click",function(){document.querySelectorAll(".articolo-check").forEach(function(c){c.checked=false;});aggiornaScelte();});\n'
++ 'aggiornaScelte();\n'
 + 'if(!window.matchMedia("(prefers-reduced-motion: reduce)").matches && "IntersectionObserver" in window){\n'
 + '  var oss=new IntersectionObserver(function(vs){vs.forEach(function(v){if(v.isIntersecting){v.target.classList.add("vista");oss.unobserve(v.target);}});},{threshold:.08});\n'
 + '  document.querySelectorAll(".reveal").forEach(function(el){oss.observe(el);});\n'
@@ -1974,7 +2211,7 @@ $('#btn-salva-impostazioni').addEventListener('click', async ()=>{
   };
   IMP.default = {
     iva: Number($('#i-iva').value),
-    validita: Number($('#i-validita').value)||30,
+    validita: numeroLimitato($('#i-validita').value, 1, 3650, 30),
     intro: $('#i-intro').value.trim(),
     condizioni: $('#i-condizioni').value.trim()
   };
